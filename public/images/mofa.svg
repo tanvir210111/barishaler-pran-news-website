@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" width="320" height="200">
+  <rect width="100%" height="100%" fill="#006a4e"/>
+  <!-- Outer Gold Ring -->
+  <circle cx="160" cy="80" r="50" fill="none" stroke="#d4af37" stroke-width="2"/>
+  <!-- Red Center -->
+  <circle cx="160" cy="80" r="45" fill="#f42a41"/>
+  <!-- Golden Water Lily / Shapla Symbol -->
+  <g fill="#d4af37">
+    <!-- Center petal -->
+    <path d="M160 52 C157 65, 157 75, 160 88 C163 75, 163 65, 160 52 Z"/>
+    <!-- Left petal -->
+    <path d="M160 88 C153 78, 142 70, 137 63 C142 75, 148 83, 160 88 Z"/>
+    <!-- Right petal -->
+    <path d="M160 88 C167 78, 178 70, 183 63 C178 75, 172 83, 160 88 Z"/>
+    <!-- Water waves below -->
+    <path d="M142 92 Q151 88 160 92 Q169 88 178 92" stroke="#d4af37" stroke-width="2.5" fill="none"/>
+    <path d="M145 96 Q152 93 160 96 Q168 93 175 96" stroke="#d4af37" stroke-width="2" fill="none"/>
+    <!-- Stars -->
+    <circle cx="140" cy="62" r="3"/>
+    <circle cx="147" cy="55" r="3"/>
+    <circle cx="173" cy="55" r="3"/>
+    <circle cx="180" cy="62" r="3"/>
+  </g>
+  <!-- Text -->
+  <text x="160" y="152" fill="#ffffff" font-family="'Noto Sans Bengali', 'SolaimanLipi', sans-serif" font-size="20" font-weight="bold" text-anchor="middle">পররাষ্ট্র মন্ত্রণালয়</text>
+  <text x="160" y="174" fill="#a3e635" font-family="'Noto Sans Bengali', 'SolaimanLipi', sans-serif" font-size="11" text-anchor="middle">গণপ্রজাতন্ত্রী বাংলাদেশ সরকার</text>
+</svg>
