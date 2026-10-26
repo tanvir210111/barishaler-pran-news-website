@@ -12,17 +12,35 @@ import { formatToBengaliDate } from "@/services/newsService";
 export default function MfitAdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [articles, setArticles] = useState<any[]>([]);
-  const [totalCount, setTotalCount] = useState<number>(54);
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [publishedCount, setPublishedCount] = useState<number>(0);
+  const [pendingCount, setPendingCount] = useState<number>(0);
 
   useEffect(() => {
-    api.get<any[]>("/news?limit=15").then((res: any) => {
-      if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
-        setArticles(res.data);
-        if (res.meta?.total) {
-          setTotalCount(res.meta.total);
+    api
+      .get<any[]>("/news?limit=15")
+      .then((res: any) => {
+        if (res?.success) {
+          const list = Array.isArray(res.data) ? res.data : [];
+          setArticles(list);
+          const total = typeof res.meta?.total === "number" ? res.meta.total : list.length;
+          setTotalCount(total);
+          const pub = list.filter((a: any) => a.publishStatus === "PUBLISHED" || !a.publishStatus).length;
+          setPublishedCount(total > 0 ? (res.meta?.totalPublished ?? pub) : 0);
+          setPendingCount(res.meta?.totalPending ?? 0);
+        } else {
+          setArticles([]);
+          setTotalCount(0);
+          setPublishedCount(0);
+          setPendingCount(0);
         }
-      }
-    });
+      })
+      .catch(() => {
+        setArticles([]);
+        setTotalCount(0);
+        setPublishedCount(0);
+        setPendingCount(0);
+      });
   }, []);
 
   return (
@@ -73,9 +91,12 @@ export default function MfitAdminDashboard() {
                         <div className="text-[30px] sm:text-[32px] font-extrabold text-[#0A2540] leading-none mb-1">
                           {totalCount}
                         </div>
-                        <span className="text-[12.5px] font-medium text-[#718096]">
+                        <Link
+                          href="/mfit-admin/articles"
+                          className="text-[12.5px] font-medium text-[#718096] hover:text-[#2563EB] transition-colors"
+                        >
                           Show Articles
-                        </span>
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -96,11 +117,14 @@ export default function MfitAdminDashboard() {
                       {/* Stat text block */}
                       <div>
                         <div className="text-[30px] sm:text-[32px] font-extrabold text-[#0A2540] leading-none mb-1">
-                          {totalCount}
+                          {publishedCount}
                         </div>
-                        <span className="text-[12.5px] font-medium text-[#718096]">
+                        <Link
+                          href="/mfit-admin/articles"
+                          className="text-[12.5px] font-medium text-[#718096] hover:text-[#10B981] transition-colors"
+                        >
                           Show Articles
-                        </span>
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -122,11 +146,14 @@ export default function MfitAdminDashboard() {
                       {/* Stat text block */}
                       <div>
                         <div className="text-[30px] sm:text-[32px] font-extrabold text-[#0A2540] leading-none mb-1">
-                          0
+                          {pendingCount}
                         </div>
-                        <span className="text-[12.5px] font-medium text-[#718096]">
+                        <Link
+                          href="/mfit-admin/articles"
+                          className="text-[12.5px] font-medium text-[#718096] hover:text-[#F97316] transition-colors"
+                        >
                           Show Articles
-                        </span>
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -144,46 +171,65 @@ export default function MfitAdminDashboard() {
               {/* RIGHT COLUMN (4 cols): Recent Articles */}
               <div className="lg:col-span-4 bg-white rounded-2xl p-5 sm:p-6 border border-[#E2E8F0] shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
                 <div>
-                  <h2 className="text-[18px] font-bold text-[#0A2540] mb-5">
-                    Recent Articles
-                  </h2>
+                  <div className="flex items-center justify-between mb-5">
+                    <h2 className="text-[18px] font-bold text-[#0A2540]">
+                      Recent Articles
+                    </h2>
+                    <Link
+                      href="/mfit-admin/new-article"
+                      className="text-xs font-semibold text-[#1677FF] hover:underline"
+                    >
+                      + New
+                    </Link>
+                  </div>
 
                   {/* Connected Vertical Timeline matching user reference */}
                   <div className="relative">
-                    {articles.length > 0
-                      ? articles.slice(0, 12).map((item, idx) => {
-                          const isLast = idx === Math.min(articles.length, 12) - 1;
-                          return (
-                            <div key={item.id || idx} className="relative flex items-start gap-3 group">
-                              {/* Time */}
-                              <span className="text-[11.5px] sm:text-[12px] font-normal text-[#64748B] w-14 shrink-0 pt-0.5 select-none truncate">
-                                {formatToBengaliDate(item.publishedDate || item.createdAt)}
-                              </span>
+                    {articles.length > 0 ? (
+                      articles.slice(0, 12).map((item, idx) => {
+                        const isLast = idx === Math.min(articles.length, 12) - 1;
+                        return (
+                          <div key={item.id || idx} className="relative flex items-start gap-3 group">
+                            {/* Time */}
+                            <span className="text-[11.5px] sm:text-[12px] font-normal text-[#64748B] w-14 shrink-0 pt-0.5 select-none truncate">
+                              {formatToBengaliDate(item.publishedDate || item.createdAt)}
+                            </span>
 
-                              {/* Timeline column: Vertical Line + Green Dot */}
-                              <div className="relative flex flex-col items-center shrink-0 self-stretch">
-                                {!isLast && (
-                                  <span className="absolute top-2.5 bottom-0 w-[2px] bg-[#EEF2F6] -translate-x-1/2 left-1/2" />
-                                )}
-                                <span className="relative z-10 w-2.5 h-2.5 rounded-full bg-[#10B981] ring-2 ring-white shrink-0 mt-1.5 shadow-xs" />
-                              </div>
-
-                              {/* Bengali Headline */}
-                              <Link
-                                href={`/article/${item.slug || item.id}`}
-                                className="text-[13px] sm:text-[13.5px] font-medium text-[#1E293B] group-hover:text-[#2F54EB] transition-colors leading-[1.45] cursor-pointer line-clamp-2 pb-4"
-                              >
-                                {item.title}
-                              </Link>
+                            {/* Timeline column: Vertical Line + Green Dot */}
+                            <div className="relative flex flex-col items-center shrink-0 self-stretch">
+                              {!isLast && (
+                                <span className="absolute top-2.5 bottom-0 w-[2px] bg-[#EEF2F6] -translate-x-1/2 left-1/2" />
+                              )}
+                              <span className="relative z-10 w-2.5 h-2.5 rounded-full bg-[#10B981] ring-2 ring-white shrink-0 mt-1.5 shadow-xs" />
                             </div>
-                          );
-                        })
-                      : Array.from({ length: 6 }).map((_, idx) => (
-                          <div key={idx} className="flex items-center gap-3 py-2 animate-pulse">
-                            <div className="h-3 w-12 bg-gray-200 rounded" />
-                            <div className="h-3.5 flex-1 bg-gray-200 rounded" />
+
+                            {/* Bengali Headline */}
+                            <Link
+                              href={`/article/${item.slug || item.id}`}
+                              className="text-[13px] sm:text-[13.5px] font-medium text-[#1E293B] group-hover:text-[#2F54EB] transition-colors leading-[1.45] cursor-pointer line-clamp-2 pb-4"
+                            >
+                              {item.title}
+                            </Link>
                           </div>
-                        ))}
+                        );
+                      })
+                    ) : (
+                      <div className="text-center py-10 px-3">
+                        <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#F0F4FA] flex items-center justify-center text-[#94A3B8]">
+                          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                          </svg>
+                        </div>
+                        <p className="text-[13.5px] font-semibold text-[#334155] mb-1">কোনো সাম্প্রতিক আর্টিকেল নেই</p>
+                        <p className="text-xs text-[#94A3B8] mb-4">অ্যাডমিন প্যানেল থেকে পোস্ট করলে এখানে প্রদর্শিত হবে</p>
+                        <Link
+                          href="/mfit-admin/new-article"
+                          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#1677FF] hover:bg-blue-600 text-white text-xs font-semibold rounded-md shadow-xs transition-colors"
+                        >
+                          + নতুন পোস্ট তৈরি করুন
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

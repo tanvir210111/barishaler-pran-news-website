@@ -14,6 +14,7 @@ import {
   Filter,
   Check,
   AlertCircle,
+  Trash2,
 } from "lucide-react";
 import MfitAdminNavbar from "@/components/admin/MfitAdminNavbar";
 import MfitAdminSidebar from "@/components/admin/MfitAdminSidebar";
@@ -89,6 +90,18 @@ function ArticlesListContent() {
       }
     } catch {
       showToast("স্ট্যাটাস পরিবর্তন করা সম্ভব হয়নি");
+    }
+  };
+
+  // Delete article
+  const handleDelete = async (id: string) => {
+    if (!confirm("আপনি কি নিশ্চিত এই নিউজটি ডিলিট করতে চান?")) return;
+    try {
+      await api.delete(`/news/${id}`);
+      setArticles((prev) => prev.filter((a) => a.id !== id));
+      showToast("সংবাদটি সফলভাবে ডিলিট করা হয়েছে");
+    } catch {
+      showToast("ডিলিট করা সম্ভব হয়নি");
     }
   };
 
@@ -276,6 +289,15 @@ function ArticlesListContent() {
                               className="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50 transition-colors"
                             >
                               <EyeOff className="w-4 h-4" />
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(article.id)}
+                              title="ডিলিট করুন"
+                              className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                            >
+                              <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
                         </td>
