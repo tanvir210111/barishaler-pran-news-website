@@ -166,31 +166,43 @@ export default function MfitAdminSidebar({
         </div>
 
         {/* Auto News */}
-        <a
-          href="#auto-news"
-          className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-[14px] text-[#2B3674] hover:bg-[#F4F7FC] transition-colors"
+        <Link
+          href="/mfit-admin/feature/auto-news"
+          className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors ${
+            activePath === "/mfit-admin/feature/auto-news"
+              ? "bg-[#EEF2FF] text-[#10B981]"
+              : "text-[#2B3674] hover:bg-[#F4F7FC]"
+          }`}
         >
           <Zap className="w-[19px] h-[19px] text-[#10B981] fill-[#10B981]" />
           <span>Auto News</span>
-        </a>
+        </Link>
 
         {/* News Agent */}
-        <a
-          href="#news-agent"
-          className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-[14px] text-[#2B3674] hover:bg-[#F4F7FC] transition-colors"
+        <Link
+          href="/mfit-admin/feature/news-agent"
+          className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors ${
+            activePath === "/mfit-admin/feature/news-agent"
+              ? "bg-[#EEF2FF] text-[#10B981]"
+              : "text-[#2B3674] hover:bg-[#F4F7FC]"
+          }`}
         >
           <Bot className="w-[19px] h-[19px] text-[#10B981]" />
           <span>News Agent</span>
-        </a>
+        </Link>
 
         {/* Live TV */}
-        <a
-          href="#live-tv"
-          className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-[14px] text-[#2B3674] hover:bg-[#F4F7FC] transition-colors"
+        <Link
+          href="/mfit-admin/feature/live-tv"
+          className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors ${
+            activePath === "/mfit-admin/feature/live-tv"
+              ? "bg-[#EEF2FF] text-[#10B981]"
+              : "text-[#2B3674] hover:bg-[#F4F7FC]"
+          }`}
         >
           <Radio className="w-[19px] h-[19px] text-[#10B981]" />
           <span>Live TV</span>
-        </a>
+        </Link>
 
         {/* Audio News */}
         <div>
@@ -198,7 +210,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("audioNews")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.audioNews
+              expandedMenus.audioNews || activePath?.includes("audio-news")
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -209,14 +221,14 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.audioNews ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.audioNews || activePath?.includes("audio-news") ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.audioNews &&
+          {(expandedMenus.audioNews || activePath?.includes("audio-news")) &&
             renderSubMenu([
-              { label: "All Audio", href: "#all-audio" },
-              { label: "Add Audio", href: "#add-audio" },
+              { label: "All Audio", href: "/mfit-admin/feature/audio-news" },
+              { label: "Add Audio", href: "/mfit-admin/feature/audio-news" },
             ])}
         </div>
 
@@ -226,7 +238,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("photoStory")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.photoStory
+              expandedMenus.photoStory || activePath?.includes("photo-story")
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -237,14 +249,14 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.photoStory ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.photoStory || activePath?.includes("photo-story") ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.photoStory &&
+          {(expandedMenus.photoStory || activePath?.includes("photo-story")) &&
             renderSubMenu([
-              { label: "All Stories", href: "#all-stories" },
-              { label: "Add Story", href: "#add-story" },
+              { label: "All Stories", href: "/mfit-admin/feature/photo-story" },
+              { label: "Add Story", href: "/mfit-admin/feature/photo-story" },
             ])}
         </div>
 
@@ -254,7 +266,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("reelsStory")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.reelsStory
+              expandedMenus.reelsStory || activePath?.includes("reels-story")
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -265,14 +277,14 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.reelsStory ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.reelsStory || activePath?.includes("reels-story") ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.reelsStory &&
+          {(expandedMenus.reelsStory || activePath?.includes("reels-story")) &&
             renderSubMenu([
-              { label: "All Reels", href: "#all-reels" },
-              { label: "Add Reel", href: "#add-reel" },
+              { label: "All Reels", href: "/mfit-admin/feature/reels-story" },
+              { label: "Add Reel", href: "/mfit-admin/feature/reels-story" },
             ])}
         </div>
 
@@ -282,7 +294,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("quotes")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.quotes
+              expandedMenus.quotes || activePath?.includes("quotes")
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -293,14 +305,14 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.quotes ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.quotes || activePath?.includes("quotes") ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.quotes &&
+          {(expandedMenus.quotes || activePath?.includes("quotes")) &&
             renderSubMenu([
-              { label: "All Quotes", href: "#all-quotes" },
-              { label: "Add Quote", href: "#add-quote" },
+              { label: "All Quotes", href: "/mfit-admin/feature/quotes" },
+              { label: "Add Quote", href: "/mfit-admin/feature/quotes" },
             ])}
         </div>
 
@@ -310,7 +322,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("photoGallery")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.photoGallery
+              expandedMenus.photoGallery || activePath?.includes("photo-gallery")
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -321,25 +333,29 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.photoGallery ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.photoGallery || activePath?.includes("photo-gallery") ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.photoGallery &&
+          {(expandedMenus.photoGallery || activePath?.includes("photo-gallery")) &&
             renderSubMenu([
-              { label: "All Galleries", href: "#all-galleries" },
-              { label: "Create Gallery", href: "#add-gallery" },
+              { label: "All Galleries", href: "/mfit-admin/feature/photo-gallery" },
+              { label: "Create Gallery", href: "/mfit-admin/feature/photo-gallery" },
             ])}
         </div>
 
         {/* Video Gallery */}
-        <a
-          href="#video-gallery"
-          className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-[14px] text-[#2B3674] hover:bg-[#F4F7FC] transition-colors"
+        <Link
+          href="/mfit-admin/feature/video-gallery"
+          className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors ${
+            activePath === "/mfit-admin/feature/video-gallery"
+              ? "bg-[#EEF2FF] text-[#7C3AED]"
+              : "text-[#2B3674] hover:bg-[#F4F7FC]"
+          }`}
         >
           <Video className="w-[19px] h-[19px] text-[#7C3AED]" />
           <span>Video Gallery</span>
-        </a>
+        </Link>
 
         {/* Poll */}
         <div>
@@ -347,7 +363,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("poll")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.poll
+              expandedMenus.poll || activePath?.includes("poll")
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -358,25 +374,29 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.poll ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.poll || activePath?.includes("poll") ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.poll &&
+          {(expandedMenus.poll || activePath?.includes("poll")) &&
             renderSubMenu([
-              { label: "All Polls", href: "#all-polls" },
-              { label: "Create Poll", href: "#create-poll" },
+              { label: "All Polls", href: "/mfit-admin/feature/poll" },
+              { label: "Create Poll", href: "/mfit-admin/feature/poll" },
             ])}
         </div>
 
         {/* Reactions & Ratings */}
-        <a
-          href="#reactions"
-          className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-[14px] text-[#2B3674] hover:bg-[#F4F7FC] transition-colors"
+        <Link
+          href="/mfit-admin/feature/reactions"
+          className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors ${
+            activePath === "/mfit-admin/feature/reactions"
+              ? "bg-[#EEF2FF] text-[#9333EA]"
+              : "text-[#2B3674] hover:bg-[#F4F7FC]"
+          }`}
         >
           <Smile className="w-[19px] h-[19px] text-[#9333EA]" />
           <span>Reactions & Ratings</span>
-        </a>
+        </Link>
 
         {/* Pages */}
         <div>
@@ -384,7 +404,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("pages")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.pages
+              expandedMenus.pages || activePath?.includes("pages")
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -395,14 +415,14 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.pages ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.pages || activePath?.includes("pages") ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.pages &&
+          {(expandedMenus.pages || activePath?.includes("pages")) &&
             renderSubMenu([
-              { label: "All Pages", href: "#all-pages" },
-              { label: "Create Page", href: "#create-page" },
+              { label: "All Pages", href: "/mfit-admin/feature/pages" },
+              { label: "Create Page", href: "/mfit-admin/feature/pages" },
             ])}
         </div>
 
@@ -419,7 +439,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("headerFooter")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.headerFooter
+              expandedMenus.headerFooter || activePath?.includes("header-footer")
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -430,14 +450,14 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.headerFooter ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.headerFooter || activePath?.includes("header-footer") ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.headerFooter &&
+          {(expandedMenus.headerFooter || activePath?.includes("header-footer")) &&
             renderSubMenu([
-              { label: "Header Settings", href: "/mfit-admin/settings" },
-              { label: "Footer Settings", href: "/mfit-admin/settings" },
+              { label: "Header Settings", href: "/mfit-admin/feature/header-footer" },
+              { label: "Footer Settings", href: "/mfit-admin/feature/header-footer" },
             ])}
         </div>
 
@@ -447,7 +467,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("homeSettings")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.homeSettings
+              expandedMenus.homeSettings || activePath?.includes("homepage-settings")
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -458,14 +478,14 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.homeSettings ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.homeSettings || activePath?.includes("homepage-settings") ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.homeSettings &&
+          {(expandedMenus.homeSettings || activePath?.includes("homepage-settings")) &&
             renderSubMenu([
-              { label: "Layout Sections", href: "#layout" },
-              { label: "Hero & Banners", href: "#banners" },
+              { label: "Layout Sections", href: "/mfit-admin/feature/homepage-settings" },
+              { label: "Hero & Banners", href: "/mfit-admin/feature/homepage-settings" },
             ])}
         </div>
 
@@ -475,7 +495,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("postSettings")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.postSettings
+              expandedMenus.postSettings || activePath?.includes("post-settings")
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -486,14 +506,14 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.postSettings ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.postSettings || activePath?.includes("post-settings") ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.postSettings &&
+          {(expandedMenus.postSettings || activePath?.includes("post-settings")) &&
             renderSubMenu([
-              { label: "Single Post Layout", href: "#post-layout" },
-              { label: "Related Posts", href: "#related-posts" },
+              { label: "Single Post Layout", href: "/mfit-admin/feature/post-settings" },
+              { label: "Related Posts", href: "/mfit-admin/feature/post-settings" },
             ])}
         </div>
 
@@ -503,7 +523,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("advertisement")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.advertisement
+              expandedMenus.advertisement || activePath?.includes("advertisement")
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -516,14 +536,14 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.advertisement ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.advertisement || activePath?.includes("advertisement") ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.advertisement &&
+          {(expandedMenus.advertisement || activePath?.includes("advertisement")) &&
             renderSubMenu([
-              { label: "Ad Slots", href: "#ad-spaces" },
-              { label: "Add Ad Banner", href: "#add-ad" },
+              { label: "Ad Slots", href: "/mfit-admin/feature/advertisement" },
+              { label: "Add Ad Banner", href: "/mfit-admin/feature/advertisement" },
             ])}
         </div>
 
@@ -533,7 +553,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("menu")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.menu
+              expandedMenus.menu || activePath?.includes("menu")
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -544,14 +564,14 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.menu ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.menu || activePath?.includes("menu") ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.menu &&
+          {(expandedMenus.menu || activePath?.includes("menu")) &&
             renderSubMenu([
-              { label: "Primary Menu", href: "#primary-menu" },
-              { label: "Footer Menu", href: "#footer-menu" },
+              { label: "Primary Menu", href: "/mfit-admin/feature/menu" },
+              { label: "Footer Menu", href: "/mfit-admin/feature/menu" },
             ])}
         </div>
 
@@ -561,7 +581,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("photoCard")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.photoCard
+              expandedMenus.photoCard || activePath?.includes("photo-card")
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -572,14 +592,14 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.photoCard ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.photoCard || activePath?.includes("photo-card") ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.photoCard &&
+          {(expandedMenus.photoCard || activePath?.includes("photo-card")) &&
             renderSubMenu([
-              { label: "All Cards", href: "#all-photo-cards" },
-              { label: "Create Card", href: "#create-photo-card" },
+              { label: "All Cards", href: "/mfit-admin/feature/photo-card" },
+              { label: "Create Card", href: "/mfit-admin/feature/photo-card" },
             ])}
         </div>
 
@@ -596,7 +616,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("writersAccount")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.writersAccount
+              expandedMenus.writersAccount || activePath?.includes("writers-account")
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -607,14 +627,14 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.writersAccount ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.writersAccount || activePath?.includes("writers-account") ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.writersAccount &&
+          {(expandedMenus.writersAccount || activePath?.includes("writers-account")) &&
             renderSubMenu([
-              { label: "All Writers", href: "#all-writers" },
-              { label: "Add Writer", href: "#add-writer" },
+              { label: "All Writers", href: "/mfit-admin/feature/writers-account" },
+              { label: "Add Writer", href: "/mfit-admin/feature/writers-account" },
             ])}
         </div>
 
@@ -624,7 +644,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("settings")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.settings
+              expandedMenus.settings || activePath === "/mfit-admin/settings"
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -635,11 +655,11 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.settings ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.settings || activePath === "/mfit-admin/settings" ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.settings &&
+          {(expandedMenus.settings || activePath === "/mfit-admin/settings") &&
             renderSubMenu([
               { label: "General Settings", href: "/mfit-admin/settings" },
               { label: "SEO & Metadata", href: "/mfit-admin/settings" },
@@ -652,7 +672,7 @@ export default function MfitAdminSidebar({
             type="button"
             onClick={() => toggleSubmenu("developerZone")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors cursor-pointer ${
-              expandedMenus.developerZone
+              expandedMenus.developerZone || activePath?.includes("developer-zone")
                 ? "bg-[#EEF2FF] text-[#3858F6]"
                 : "text-[#2B3674] hover:bg-[#F4F7FC]"
             }`}
@@ -663,34 +683,42 @@ export default function MfitAdminSidebar({
             </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform duration-200 ${
-                expandedMenus.developerZone ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
+                expandedMenus.developerZone || activePath?.includes("developer-zone") ? "rotate-180 text-[#3858F6]" : "text-[#A3AED0]"
               }`}
             />
           </button>
-          {expandedMenus.developerZone &&
+          {(expandedMenus.developerZone || activePath?.includes("developer-zone")) &&
             renderSubMenu([
-              { label: "API Keys", href: "#api-keys" },
-              { label: "Webhooks", href: "#webhooks" },
+              { label: "API Keys", href: "/mfit-admin/feature/developer-zone" },
+              { label: "Webhooks", href: "/mfit-admin/feature/developer-zone" },
             ])}
         </div>
 
         {/* Web Access */}
-        <a
-          href="#web-access"
-          className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-[14px] text-[#2B3674] hover:bg-[#F4F7FC] transition-colors"
+        <Link
+          href="/mfit-admin/feature/web-access"
+          className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors ${
+            activePath === "/mfit-admin/feature/web-access"
+              ? "bg-[#EEF2FF] text-[#DC2626]"
+              : "text-[#2B3674] hover:bg-[#F4F7FC]"
+          }`}
         >
           <ScanFace className="w-[19px] h-[19px] text-[#DC2626]" />
           <span>Web Access</span>
-        </a>
+        </Link>
 
         {/* Security */}
-        <a
-          href="#security"
-          className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-[14px] text-[#2B3674] hover:bg-[#F4F7FC] transition-colors mb-6"
+        <Link
+          href="/mfit-admin/feature/security"
+          className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-[14px] transition-colors mb-6 ${
+            activePath === "/mfit-admin/feature/security"
+              ? "bg-[#EEF2FF] text-[#DC2626]"
+              : "text-[#2B3674] hover:bg-[#F4F7FC]"
+          }`}
         >
           <Shield className="w-[19px] h-[19px] text-[#DC2626]" />
           <span>Security</span>
-        </a>
+        </Link>
       </div>
     </aside>
   );
