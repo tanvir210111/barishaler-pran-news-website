@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ScrollToTop from "@/components/common/ScrollToTop";
+import { recordTrafficView } from "@/components/admin/TrafficChart";
 
 export default function SiteLayoutWrapper({
   children,
@@ -14,6 +15,12 @@ export default function SiteLayoutWrapper({
   const pathname = usePathname();
   const isAdminRoute =
     pathname?.startsWith("/mfit-admin") || pathname?.startsWith("/admin");
+
+  useEffect(() => {
+    if (!isAdminRoute) {
+      recordTrafficView();
+    }
+  }, [pathname, isAdminRoute]);
 
   if (isAdminRoute) {
     return <div className="min-h-screen w-full bg-[#F4F7FC]">{children}</div>;

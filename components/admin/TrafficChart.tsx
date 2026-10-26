@@ -1,25 +1,61 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-interface DataPoint {
+export interface DataPoint {
   date: string;
   value: number;
 }
 
-const TRAFFIC_DATA: DataPoint[] = [
-  { date: "2026-10-12", value: 18477 },
-  { date: "2026-10-13", value: 13134 },
-  { date: "2026-10-14", value: 10281 },
-  { date: "2026-10-15", value: 9530 },
-  { date: "2026-10-16", value: 11070 },
-  { date: "2026-10-17", value: 9769 },
-  { date: "2026-10-18", value: 14869 },
-  { date: "2026-10-19", value: 3919 },
-];
+export function getRealtimeTrafficData(): DataPoint[] {
+  const result: DataPoint[] = [];
+  const now = new Date();
+
+  for (let i = 7; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    const dateStr = `${yyyy}-${mm}-${dd}`;
+
+    let val = 0;
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem(`site_traffic_${dateStr}`);
+        if (stored) val = parseInt(stored, 10) || 0;
+      } catch {}
+    }
+
+    result.push({
+      date: dateStr,
+      value: val,
+    });
+  }
+
+  return result;
+}
+
+export function recordTrafficView() {
+  if (typeof window === "undefined") return;
+  try {
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    const dd = String(now.getDate()).padStart(2, "0");
+    const key = `site_traffic_${yyyy}-${mm}-${dd}`;
+    const current = parseInt(localStorage.getItem(key) || "0", 10);
+    localStorage.setItem(key, String(current + 1));
+  } catch {}
+}
 
 export default function TrafficChart() {
+  const [trafficData, setTrafficData] = useState<DataPoint[]>(getRealtimeTrafficData);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    setTrafficData(getRealtimeTrafficData());
+  }, []);
 
   // Exact aspect ratio and vertical proportions - slightly taller to prevent squashed feel
   const width = 800;
@@ -31,13 +67,17 @@ export default function TrafficChart() {
 
   const chartWidth = width - paddingLeft - paddingRight;
   const chartHeight = height - paddingTop - paddingBottom;
+  const bottomY = paddingTop + chartHeight;
 
   const maxY = 20000;
   const yTicks = [20000, 16000, 12000, 8000, 4000, 0];
 
-  const points = TRAFFIC_DATA.map((d, index) => {
-    const x = paddingLeft + (index / (TRAFFIC_DATA.length - 1)) * chartWidth;
-    const y = paddingTop + chartHeight - (d.value / maxY) * chartHeight;
+  const points = trafficData.map((d, index) => {
+    const x = paddingLeft + (index / (trafficData.length - 1)) * chartWidth;
+    const yRatio = d.value > 0 ? d.value / maxY : 0;
+    const y = yRatio > 0
+      ? bottomY - 14 - yRatio * (chartHeight - 34)
+      : bottomY - 14;
     return { x, y, ...d };
   });
 
@@ -81,7 +121,6 @@ export default function TrafficChart() {
   };
 
   const linePath = getMonotoneSplinePath();
-  const bottomY = paddingTop + chartHeight;
   const areaPath = `${linePath} L ${points[points.length - 1].x.toFixed(2)} ${bottomY} L ${points[0].x.toFixed(2)} ${bottomY} Z`;
 
   const hoveredPoint = hoveredIndex !== null ? points[hoveredIndex] : null;
