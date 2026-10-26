@@ -175,40 +175,49 @@ export default function AllMediaPage() {
             </div>
 
             {/* Media 6-Column Grid matching Screenshot 2 */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
-              {filteredItems.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => setSelectedMedia(item)}
-                  className="group relative aspect-square bg-[#F8FAFC] border border-[#D1D5DB] hover:border-[#1677FF] p-1 rounded-xs shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-center overflow-hidden"
-                >
-                  {item.isPlaceholder ? (
-                    <div className="w-full h-full bg-[#EDEDED] flex items-center justify-center p-2 text-center">
-                      <span className="text-[11px] font-mono text-[#475569] break-all leading-tight select-none">
-                        {item.fileName}
-                      </span>
-                    </div>
-                  ) : (
-                    <img
-                      src={item.thumbnailUrl || item.url}
-                      alt={item.fileName}
-                      className="w-full h-full object-cover rounded-xs group-hover:scale-102 transition-transform duration-200"
-                      loading="lazy"
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
+            {filteredItems.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
+                {filteredItems.map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => setSelectedMedia(item)}
+                    className="group relative aspect-square bg-[#F8FAFC] border border-[#D1D5DB] hover:border-[#1677FF] p-1 rounded-xs shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-center overflow-hidden"
+                  >
+                    {item.isPlaceholder ? (
+                      <div className="w-full h-full bg-[#EDEDED] flex items-center justify-center p-2 text-center">
+                        <span className="text-[11px] font-mono text-[#475569] break-all leading-tight select-none">
+                          {item.fileName}
+                        </span>
+                      </div>
+                    ) : (
+                      <img
+                        src={item.thumbnailUrl || item.url}
+                        alt={item.fileName}
+                        className="w-full h-full object-cover rounded-xs group-hover:scale-102 transition-transform duration-200"
+                        loading="lazy"
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl border border-[#D5E1F5] p-12 text-center text-[#64748B]">
+                <p className="text-sm font-medium mb-1">মিডিয়া লাইব্রেরিতে কোনো ফাইল নেই</p>
+                <p className="text-xs text-[#94A3B8]">নতুন ছবি বা ফাইল আপলোড করতে উপরে &quot;Add Media&quot; বাটনে ক্লিক করুন।</p>
+              </div>
+            )}
 
             {/* Load More Button */}
-            <div className="mt-8 mb-6 flex justify-center">
-              <button
-                type="button"
-                className="bg-[#1677FF] hover:bg-blue-600 text-white font-medium text-xs px-5 py-2 rounded-md shadow-xs transition-colors cursor-pointer"
-              >
-                Load More
-              </button>
-            </div>
+            {filteredItems.length > 12 && (
+              <div className="mt-8 mb-6 flex justify-center">
+                <button
+                  type="button"
+                  className="bg-[#1677FF] hover:bg-blue-600 text-white font-medium text-xs px-5 py-2 rounded-md shadow-xs transition-colors cursor-pointer"
+                >
+                  Load More
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Footer */}

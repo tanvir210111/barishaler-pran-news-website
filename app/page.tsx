@@ -75,9 +75,6 @@ export default async function HomePage() {
       <AdvertisementPlaceholder
         size="leaderboard"
         className="mt-1 mb-2"
-        imageUrl="https://onenewsexpress.com/uploads/5466130579866378084.gif"
-        href="https://onenewsexpress.com"
-        altText="বিজ্ঞাপন ব্যানার"
       />
 
       {/* 2. Main Latest News Section (Left Part: 9 cards with larger headlines | Right Part: Video Ad + 5 cards) */}
@@ -99,35 +96,43 @@ export default async function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 items-stretch">
           {/* Left Part: 9 cards in 3-column grid (Original dimensions, fonts, line-clamp-3, and gaps restored) */}
           <div className="lg:col-span-8 lg:border-r lg:border-[#E2E6EB] lg:pr-4 xl:pr-5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 lg:gap-6">
-              {leftLatestArticles.map((art) => (
-                <article key={art.id} className="group flex flex-col justify-between h-full">
-                  <div>
-                    <Link
-                      href={`/news/${art.slug}`}
-                      className="block relative aspect-[16/10] w-full overflow-hidden rounded-xs bg-gray-100 mb-2.5"
-                    >
-                      <Image
-                        src={getImg(art.featuredImage)}
-                        alt={art.title}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </Link>
-                    <Link href={`/news/${art.slug}`}>
-                      <h3 className="font-bold text-[18px] sm:text-[19px] lg:text-[20px] leading-[1.35] text-[#202124] group-hover:text-[#0756A4] transition-colors line-clamp-3 mb-2">
-                        {art.title}
-                      </h3>
-                    </Link>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-[12.5px] text-[#626B75] mt-auto pt-1">
-                    <Clock className="w-4 h-4 text-gray-400" />
-                    <span>{art.publishedAtBengali}</span>
-                  </div>
-                </article>
-              ))}
-            </div>
+            {leftLatestArticles.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 lg:gap-6">
+                {leftLatestArticles.map((art) => (
+                  <article key={art.id} className="group flex flex-col justify-between h-full">
+                    <div>
+                      <Link
+                        href={`/news/${art.slug}`}
+                        className="block relative aspect-[16/10] w-full overflow-hidden rounded-xs bg-gray-100 mb-2.5"
+                      >
+                        <Image
+                          src={getImg(art.featuredImage)}
+                          alt={art.title}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </Link>
+                      <Link href={`/news/${art.slug}`}>
+                        <h3 className="font-bold text-[18px] sm:text-[19px] lg:text-[20px] leading-[1.35] text-[#202124] group-hover:text-[#0756A4] transition-colors line-clamp-3 mb-2">
+                          {art.title}
+                        </h3>
+                      </Link>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[12.5px] text-[#626B75] mt-auto pt-1">
+                      <Clock className="w-4 h-4 text-gray-400" />
+                      <span>{art.publishedAtBengali}</span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <div className="py-14 text-center text-[#626B75] text-sm flex flex-col items-center justify-center">
+                <Newspaper className="w-9 h-9 mb-2 text-[#0756A4] opacity-50" />
+                <p className="font-medium text-base text-[#202124] mb-1">কোনো সংবাদ পাওয়া যায়নি</p>
+                <p className="text-xs text-gray-500">অ্যাডমিন প্যানেল থেকে সংবাদ পোস্ট করলে এখানে প্রদর্শিত হবে।</p>
+              </div>
+            )}
           </div>
 
           {/* Right Part: Larger Banner on Top + Original 6 Latest News cards vertically stacked */}
@@ -135,10 +140,8 @@ export default async function HomePage() {
             {/* 1. Larger Advertisement Banner within right column, aspect 16:9, w-full */}
             <div className="w-full mb-3">
               <AdvertisementPlaceholder
-                size="video"
-                videoUrl="https://cdn.dribbble.com/userupload/49248603/file/b200de74a27bbf01ab5276fd6e19ddec.mp4"
+                size="banner"
                 aspectRatio="aspect-[16/9]"
-                altText="বিজ্ঞাপন"
                 className="!my-0 w-full"
               />
             </div>
@@ -195,77 +198,79 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        {/* 2-Column Grid: Left lead matches right 3 items height with perfect alignment */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-start">
-          {/* Left Column: 1 Lead Story (Compact image, headline only without details) */}
-          <div className="lg:col-span-7">
-            <article className="group">
-              <Link
-                href={`/news/${nationalLeadArticle.slug}`}
-                className="block relative aspect-[16/7] sm:aspect-[16/7.5] w-full overflow-hidden rounded-xs bg-gray-100 mb-2"
-              >
-                <Image
-                  src={getImg(nationalLeadArticle.featuredImage)}
-                  alt={nationalLeadArticle.title}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 58vw"
-                  priority
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              </Link>
-              <h3 className="text-xl sm:text-[22px] font-bold text-[#202124] group-hover:text-[#0756A4] transition-colors leading-[1.3] mb-2">
-                <Link href={`/news/${nationalLeadArticle.slug}`}>
-                  {nationalLeadArticle.title}
-                </Link>
-              </h3>
-              <div className="flex items-center gap-1.5 text-xs text-[#626B75]">
-                <Clock className="w-3.5 h-3.5 text-gray-400" />
-                <span>{nationalLeadArticle.publishedAtBengali}</span>
-              </div>
-            </article>
-          </div>
-
-          {/* Right Column: 3 Horizontal Cards Stacked Vertically (Larger images & headlines, aligned with left) */}
-          <div className="lg:col-span-5 flex flex-col divide-y divide-[#E2E6EB] lg:border-l lg:border-[#E2E6EB] lg:pl-6">
-            {nationalSideArticles.map((art, idx) => (
-              <Link
-                key={art.id}
-                href={`/news/${art.slug}`}
-                className={`group flex items-start gap-3.5 sm:gap-4 ${
-                  idx === 0 ? "pb-3.5 sm:pb-4" : idx === 2 ? "pt-3.5 sm:pt-4" : "py-3.5 sm:py-4"
-                }`}
-              >
-                <div className="relative w-36 sm:w-40 lg:w-44 aspect-[16/10] shrink-0 rounded-xs overflow-hidden bg-gray-100 border border-gray-100">
+        {nationalLeadArticle && nationalLeadArticle.title ? (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-start">
+            {/* Left Column: 1 Lead Story (Compact image, headline only without details) */}
+            <div className="lg:col-span-7">
+              <article className="group">
+                <Link
+                  href={`/news/${nationalLeadArticle.slug}`}
+                  className="block relative aspect-[16/7] sm:aspect-[16/7.5] w-full overflow-hidden rounded-xs bg-gray-100 mb-2"
+                >
                   <Image
-                    src={getImg(art.featuredImage)}
-                    alt={art.title}
+                    src={getImg(nationalLeadArticle.featuredImage)}
+                    alt={nationalLeadArticle.title}
                     fill
-                    sizes="(max-width: 640px) 144px, 176px"
+                    sizes="(max-width: 1024px) 100vw, 58vw"
+                    priority
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
+                </Link>
+                <h3 className="text-xl sm:text-[22px] font-bold text-[#202124] group-hover:text-[#0756A4] transition-colors leading-[1.3] mb-2">
+                  <Link href={`/news/${nationalLeadArticle.slug}`}>
+                    {nationalLeadArticle.title}
+                  </Link>
+                </h3>
+                <div className="flex items-center gap-1.5 text-xs text-[#626B75]">
+                  <Clock className="w-3.5 h-3.5 text-gray-400" />
+                  <span>{nationalLeadArticle.publishedAtBengali}</span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-[16.5px] sm:text-[17.5px] font-bold text-[#202124] group-hover:text-[#0756A4] line-clamp-2 leading-snug transition-colors mb-2">
-                    {art.title}
-                  </h4>
-                  <div className="flex items-center gap-1 text-xs sm:text-[12.5px] text-[#626B75]">
-                    <Clock className="w-3.5 h-3.5 text-gray-400" />
-                    <span>{art.publishedAtBengali}</span>
+              </article>
+            </div>
+
+            {/* Right Column: 3 Horizontal Cards Stacked Vertically */}
+            <div className="lg:col-span-5 flex flex-col divide-y divide-[#E2E6EB] lg:border-l lg:border-[#E2E6EB] lg:pl-6">
+              {nationalSideArticles.map((art, idx) => (
+                <Link
+                  key={art.id}
+                  href={`/news/${art.slug}`}
+                  className={`group flex items-start gap-3.5 sm:gap-4 ${
+                    idx === 0 ? "pb-3.5 sm:pb-4" : idx === 2 ? "pt-3.5 sm:pt-4" : "py-3.5 sm:py-4"
+                  }`}
+                >
+                  <div className="relative w-36 sm:w-40 lg:w-44 aspect-[16/10] shrink-0 rounded-xs overflow-hidden bg-gray-100 border border-gray-100">
+                    <Image
+                      src={getImg(art.featuredImage)}
+                      alt={art.title}
+                      fill
+                      sizes="(max-width: 640px) 144px, 176px"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
                   </div>
-                </div>
-              </Link>
-            ))}
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-[16.5px] sm:text-[17.5px] font-bold text-[#202124] group-hover:text-[#0756A4] line-clamp-2 leading-snug transition-colors mb-2">
+                      {art.title}
+                    </h4>
+                    <div className="flex items-center gap-1 text-xs sm:text-[12.5px] text-[#626B75]">
+                      <Clock className="w-3.5 h-3.5 text-gray-400" />
+                      <span>{art.publishedAtBengali}</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="py-6 text-center text-[#626B75] text-xs sm:text-sm">
+            জাতীয় বিভাগে এখনও কোনো সংবাদ প্রকাশিত হয়নি।
+          </div>
+        )}
       </section>
 
-      {/* 5. Daraz 11.11 Promotional Banner */}
+      {/* 5. Promotional Leaderboard Banner */}
       <AdvertisementPlaceholder
         size="leaderboard"
         className="my-3"
-        imageUrl="/images/ads/daraz-11-11.png"
-        href="https://www.daraz.com.bd"
-        altText="দারাজ ১১.১১ ক্যাম্পেইন"
       />
 
       {/* 3. Dual Section Pair: আন্তর্জাতিক (International) & রাজনীতি (Politics) */}
@@ -296,9 +301,6 @@ export default async function HomePage() {
       <AdvertisementPlaceholder
         size="leaderboard"
         className="my-6"
-        imageUrl="https://onenewsexpress.com/uploads/5342957609171149330.gif"
-        href="https://onenewsexpress.com"
-        altText="বিজ্ঞাপন ব্যানার"
       />
 
       {/* 5. Dual Section Pair: খেলাধুলা (Sports) & বিনোদন (Entertainment) */}
@@ -329,9 +331,6 @@ export default async function HomePage() {
       <AdvertisementPlaceholder
         size="leaderboard"
         className="my-6"
-        imageUrl="https://onenewsexpress.com/uploads/18372985650664559018-1.gif"
-        href="https://onenewsexpress.com"
-        altText="বিজ্ঞাপন ব্যানার"
       />
 
       {/* 7. ৩-কলাম বিভাগীয় গ্রিড: আন্তর্জাতিক, অর্থনীতি ও প্রযুক্তি */}

@@ -18,6 +18,8 @@ export default function PopularScrollSection({
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
+  if (!articles || articles.length === 0) return null;
+
   // Mouse drag-to-scroll variables
   const isDown = useRef(false);
   const startX = useRef(0);

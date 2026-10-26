@@ -132,6 +132,10 @@ export default function DualCategorySection({
   firstCategory,
   secondCategory,
 }: DualCategorySectionProps) {
+  const hasFirst = Boolean(firstCategory?.articles && firstCategory.articles.length > 0);
+  const hasSecond = Boolean(secondCategory?.articles && secondCategory.articles.length > 0);
+  if (!hasFirst && !hasSecond) return null;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 my-6 items-stretch">
       <CategoryColumn

@@ -265,13 +265,18 @@ export default function NewArticlePage() {
       );
       const categoryId = selectedCatObj ? selectedCatObj.id : (category || undefined);
 
+      const isMongoId = (val: string) => /^[0-9a-fA-F]{24}$/.test(val);
+      const validWriterId = isMongoId(selectedWriter) 
+        ? selectedWriter 
+        : (dbWriters.length > 0 && isMongoId(dbWriters[0].id) ? dbWriters[0].id : undefined);
+
       const payload = {
         title: title.trim(),
         subtitle: subtitle.trim() || undefined,
         content: content || `<p>${title}</p>`,
         summary: subtitle.trim() || title.trim(),
-        categoryId,
-        writerId: selectedWriter || undefined,
+        categoryId: categoryId && isMongoId(categoryId) ? categoryId : undefined,
+        writerId: validWriterId,
         guestWriterName: guestWriterName.trim() || undefined,
         guestWriterDesignation: guestWriterDesignation.trim() || undefined,
         featuredImage: previewImage || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1200",
