@@ -11,14 +11,16 @@ interface HorizontalCardProps {
 }
 
 export default function HorizontalNewsCard({ article, compact = false }: HorizontalCardProps) {
+  if (!article) return null;
+  const imgUrl = typeof article.featuredImage === "string" ? article.featuredImage : article.featuredImage?.url || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=600";
   return (
     <article className="bg-white rounded-lg border border-[#E2E6EB] hover:border-[#0756A4]/30 hover:shadow-xs transition-all overflow-hidden p-3 flex gap-3 sm:gap-4 group">
       {/* Thumbnail */}
       <div className={`relative ${compact ? "w-24 h-20 sm:w-28 sm:h-24" : "w-28 h-24 sm:w-44 sm:h-32"} shrink-0 rounded overflow-hidden bg-gray-100`}>
         <Link href={`/news/${article.slug}`} className="block w-full h-full">
           <Image
-            src={article.featuredImage.url}
-            alt={article.featuredImage.alt || article.title}
+            src={imgUrl}
+            alt={article.title}
             fill
             sizes="200px"
             className="object-cover group-hover:scale-105 transition-transform duration-300"

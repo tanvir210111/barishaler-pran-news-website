@@ -16,7 +16,8 @@ import {
 import TopUtilityBar from "./TopUtilityBar";
 import BreakingNewsTicker from "./BreakingNewsTicker";
 import SocialMediaIcons from "@/components/common/SocialMediaIcons";
-import { BREAKING_NEWS, CATEGORIES } from "@/data/mockNews";
+import { getCategories, getBreakingNews } from "@/services/newsService";
+import { Category, BreakingNewsItem } from "@/types/news";
 
 export default function Header() {
   const pathname = usePathname();
@@ -27,6 +28,18 @@ export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showDemoModal, setShowDemoModal] = useState<string | null>(null);
+
+  const [drawerCategories, setDrawerCategories] = useState<Category[]>([]);
+  const [breakingItems, setBreakingItems] = useState<BreakingNewsItem[]>([]);
+
+  useEffect(() => {
+    getCategories().then((cats) => {
+      if (cats && cats.length > 0) setDrawerCategories(cats);
+    });
+    getBreakingNews().then((news) => {
+      if (news && news.length > 0) setBreakingItems(news);
+    });
+  }, []);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -41,9 +54,6 @@ export default function Header() {
     { name: "বিনোদন", href: "/category/entertainment" },
     { name: "ভিডিও", href: "/videos" },
   ];
-
-  // All categories for drawer menu
-  const drawerCategories = CATEGORIES;
 
   // Prevent background scrolling when mobile drawer is open
   useEffect(() => {
@@ -184,15 +194,15 @@ export default function Header() {
               <span>Eng</span>
             </button>
 
-            {/* 3. Login */}
-            <button
-              onClick={() => setShowDemoModal("লগইন / সাইন ইন (পাবলিক ডেমো সংস্করণ - ব্যাকএন্ড ছাড়া পরিচালিত)")}
+            {/* 3. Login / Admin */}
+            <Link
+              href="/admin"
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-[15px] sm:text-[16px] font-semibold text-white bg-transparent hover:bg-white hover:text-[#123B5D] rounded-xs transition-colors duration-200 ease-in-out cursor-pointer whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-              title="ব্যবহারকারী লগইন"
+              title="অ্যাডমিন প্যানেল / লগইন"
             >
               <User className="w-4 h-4" />
               <span>Login</span>
-            </button>
+            </Link>
 
             {/* 4. ☰ Hamburger Icon (Opens All Categories Drawer) */}
             <button
@@ -246,7 +256,7 @@ export default function Header() {
       )}
 
       {/* 3. Breaking News Ticker (Refined Red #C62828 with White Text) */}
-      <BreakingNewsTicker items={BREAKING_NEWS} />
+      <BreakingNewsTicker items={breakingItems} />
 
       {/* Demo Feedback Modal for E-Paper / Login / Eng */}
       {showDemoModal && (

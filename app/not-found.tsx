@@ -1,7 +1,17 @@
 import React from "react";
 import Link from "next/link";
 import { Search, Home, ArrowLeft } from "lucide-react";
-import { CATEGORIES } from "@/data/mockNews";
+
+const SUGGESTED_CATEGORIES = [
+  { name: "জাতীয়", slug: "national" },
+  { name: "রাজনীতি", slug: "politics" },
+  { name: "আন্তর্জাতিক", slug: "international" },
+  { name: "খেলাধুলা", slug: "sports" },
+  { name: "বিনোদন", slug: "entertainment" },
+  { name: "অর্থনীতি", slug: "economy" },
+  { name: "প্রযুক্তি", slug: "technology" },
+  { name: "সারাদেশ", slug: "countrywide" },
+];
 
 export default function NotFound() {
   return (
@@ -43,7 +53,7 @@ export default function NotFound() {
           জনপ্রিয় বিভাগসমূহ ঘুরে দেখুন:
         </h3>
         <div className="flex flex-wrap items-center justify-center gap-2">
-          {CATEGORIES.slice(0, 8).map((cat) => (
+          {SUGGESTED_CATEGORIES.map((cat) => (
             <Link
               key={cat.slug}
               href={`/category/${cat.slug}`}

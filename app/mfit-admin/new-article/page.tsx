@@ -45,6 +45,8 @@ import {
 } from "@/data/bangladeshLocations";
 import { ARTICLE_WRITERS } from "@/data/articleWriters";
 import { api } from "@/services/apiClient";
+import { getCategories, getAuthors } from "@/services/newsService";
+import { Category, Author } from "@/types/news";
 
 const SUB_CATEGORIES = [
   "চাকরি",
@@ -113,6 +115,10 @@ export default function NewArticlePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageUploadRef = useRef<HTMLInputElement>(null);
 
+  // Dynamic DB Categories and Writers
+  const [dbCategories, setDbCategories] = useState<Category[]>([]);
+  const [dbWriters, setDbWriters] = useState<Author[]>([]);
+
   // Set default formatted date on mount
   useEffect(() => {
     const now = new Date();
@@ -129,6 +135,16 @@ export default function NewArticlePage() {
     const ss = String(now.getSeconds()).padStart(2, "0");
 
     setPublishDate(`${mm}/${dd}/${yyyy} ${hh}:${min}:${ss} ${ampm}`);
+
+    // Load categories from live database
+    getCategories().then((cats) => {
+      if (cats && cats.length > 0) setDbCategories(cats);
+    });
+
+    // Load writers from live database
+    getAuthors().then((w) => {
+      if (w && w.length > 0) setDbWriters(w);
+    });
   }, []);
 
   // Filtered districts based on selected division
@@ -244,11 +260,20 @@ export default function NewArticlePage() {
 
     setIsSubmitting(true);
     try {
+      const selectedCatObj = dbCategories.find(
+        (c) => c.id === category || c.slug === category || c.name === category
+      );
+      const categoryId = selectedCatObj ? selectedCatObj.id : (category || undefined);
+
       const payload = {
         title: title.trim(),
         subtitle: subtitle.trim() || undefined,
         content: content || `<p>${title}</p>`,
         summary: subtitle.trim() || title.trim(),
+        categoryId,
+        writerId: selectedWriter || undefined,
+        guestWriterName: guestWriterName.trim() || undefined,
+        guestWriterDesignation: guestWriterDesignation.trim() || undefined,
         featuredImage: previewImage || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1200",
         youtubeLink: youtubeLink.trim() || undefined,
         division: selectedDivision || undefined,
@@ -736,11 +761,17 @@ export default function NewArticlePage() {
                           className="w-full text-[13px] px-3 py-2 border border-[#CBD5E1] rounded-md bg-white text-[#1E293B] outline-none focus:border-[#1677FF] focus:ring-1 focus:ring-[#1677FF] cursor-pointer"
                         >
                           <option value="">Select Writer</option>
-                          {ARTICLE_WRITERS.map((writer) => (
-                            <option key={writer.id} value={writer.id}>
-                              {writer.displayName}
-                            </option>
-                          ))}
+                          {dbWriters.length > 0
+                            ? dbWriters.map((writer) => (
+                                <option key={writer.id} value={writer.id}>
+                                  {writer.name} - {writer.role}
+                                </option>
+                              ))
+                            : ARTICLE_WRITERS.map((writer) => (
+                                <option key={writer.id} value={writer.id}>
+                                  {writer.displayName}
+                                </option>
+                              ))}
                         </select>
 
                         <p className="text-[11.5px] text-[#64748B] mt-2">
@@ -765,18 +796,30 @@ export default function NewArticlePage() {
                       className="w-full text-[13px] px-3 py-2 border border-[#CBD5E1] rounded-md bg-white text-[#1E293B] outline-none focus:border-[#1677FF] focus:ring-1 focus:ring-[#1677FF] cursor-pointer"
                     >
                       <option value="">Select Category</option>
-                      <option value="জাতীয়">জাতীয়</option>
-                      <option value="রাজনীতি">রাজনীতি</option>
-                      <option value="আন্তর্জাতিক">আন্তর্জাতিক</option>
-                      <option value="খেলাধুলা">খেলাধুলা</option>
-                      <option value="বিনোদন">বিনোদন</option>
-                      <option value="সারাদেশ">সারাদেশ</option>
-                      <option value="অর্থনীতি">অর্থনীতি</option>
-                      <option value="শিক্ষা">শিক্ষা</option>
-                      <option value="প্রযুক্তি">প্রযুক্তি</option>
-                      <option value="স্বাস্থ্য">স্বাস্থ্য</option>
-                      <option value="চাকরি">চাকরি</option>
-                      <option value="মতামত">মতামত</option>
+                      {dbCategories.length > 0
+                        ? dbCategories.map((cat) => (
+                            <option key={cat.id} value={cat.id}>
+                              {cat.name}
+                            </option>
+                          ))
+                        : [
+                            "জাতীয়",
+                            "রাজনীতি",
+                            "আন্তর্জাতিক",
+                            "খেলাধুলা",
+                            "বিনোদন",
+                            "সারাদেশ",
+                            "অর্থনীতি",
+                            "শিক্ষা",
+                            "প্রযুক্তি",
+                            "স্বাস্থ্য",
+                            "চাকরি",
+                            "মতামত",
+                          ].map((cat) => (
+                            <option key={cat} value={cat}>
+                              {cat}
+                            </option>
+                          ))}
                     </select>
                   </div>
 

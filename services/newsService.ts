@@ -44,7 +44,27 @@ export function formatToBengaliDate(isoDateString?: string): string {
 
 // Intelligent mapper: transforms backend API news response into frontend Article interface
 export function mapBackendNewsToArticle(item: any): Article {
-  if (!item) return ARTICLES[0];
+  if (!item) {
+    return {
+      id: "fallback-id",
+      title: "",
+      slug: "",
+      summary: "",
+      content: "",
+      category: { id: "1", name: "জাতীয়", slug: "national", order: 1, isMain: true },
+      author: { id: "writer-1", name: "স্টাফ রিপোর্টার", slug: "staff-reporter", role: "প্রতিবেদক", bio: "", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" },
+      featuredImage: { url: "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1200&auto=format&fit=crop&q=80", caption: "", credit: "", alt: "" },
+      tags: [],
+      publishedAt: new Date().toISOString(),
+      publishedAtBengali: "আজ",
+      readingTimeMinutes: 3,
+      isLead: false,
+      isBreaking: false,
+      isFeatured: false,
+      viewsCount: 0,
+      sharesCount: 0,
+    };
+  }
 
   // Already an Article
   if (item.author && item.publishedAtBengali && item.featuredImage?.caption !== undefined) {
@@ -179,14 +199,14 @@ export async function getHomepageLayout(): Promise<any | null> {
 
 export async function getAllArticles(): Promise<Article[]> {
   try {
-    const res = await api.get<any[]>("/news?limit=50");
+    const res = await api.get<any[]>("/news?limit=100");
     if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
       return res.data.map(mapBackendNewsToArticle);
     }
   } catch (err) {
     console.warn("Using fallback articles due to:", err);
   }
-  return ARTICLES;
+  return [];
 }
 
 export async function getLeadArticle(): Promise<Article> {
@@ -199,10 +219,12 @@ export async function getLeadArticle(): Promise<Article> {
     if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
       return mapBackendNewsToArticle(res.data[0]);
     }
+    const all = await getAllArticles();
+    if (all.length > 0) return all[0];
   } catch (err) {
     console.warn("Using fallback lead article");
   }
-  return ARTICLES.find((a) => a.isLead) || ARTICLES[0];
+  return null as any;
 }
 
 export async function getFeaturedArticles(limit: number = 4): Promise<Article[]> {
@@ -218,7 +240,7 @@ export async function getFeaturedArticles(limit: number = 4): Promise<Article[]>
   } catch (err) {
     console.warn("Using fallback featured articles");
   }
-  return ARTICLES.filter((a) => !a.isLead).slice(0, limit);
+  return [];
 }
 
 export async function getArticleBySlug(slug: string): Promise<Article | undefined> {
@@ -228,9 +250,9 @@ export async function getArticleBySlug(slug: string): Promise<Article | undefine
       return mapBackendNewsToArticle(res.data);
     }
   } catch (err) {
-    console.warn(`Could not fetch article slug: ${slug} from API, using fallback`);
+    console.warn(`Could not fetch article slug: ${slug} from API:`, err);
   }
-  return ARTICLES.find((a) => a.slug === slug);
+  return undefined;
 }
 
 export async function getArticlesByCategory(categorySlug: string): Promise<Article[]> {
@@ -242,7 +264,7 @@ export async function getArticlesByCategory(categorySlug: string): Promise<Artic
   } catch (err) {
     console.warn(`Failed fetching category ${categorySlug} from API`);
   }
-  return ARTICLES.filter((a) => a.category.slug === categorySlug);
+  return [];
 }
 
 export async function getArticlesByTag(tagSlug: string): Promise<Article[]> {
@@ -254,15 +276,60 @@ export async function getArticlesByTag(tagSlug: string): Promise<Article[]> {
   } catch (err) {
     console.warn(`Failed fetching tag ${tagSlug} from API`);
   }
-  return ARTICLES.filter((a) => a.tags.some((t) => t.slug === tagSlug));
+  return [];
 }
 
-export async function getArticlesByAuthor(authorSlug: string): Promise<Article[]> {
-  return ARTICLES.filter((a) => a.author.slug === authorSlug);
+export function mapBackendWriterToAuthor(w: any): Author {
+  return {
+    id: String(w.id || w._id),
+    name: w.name,
+    slug: w.slug || (w.name ? w.name.toLowerCase().replace(/\s+/g, "-") : String(w.id)),
+    role: w.designationTitle || w.designation?.name || "প্রতিবেদক",
+    bio: w.bio || "বরিশালের প্রাণ সম্পাদকীয় দল",
+    avatar: w.profileImage || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+    email: w.email,
+    location: w.location,
+  };
+}
+
+export async function getAuthors(): Promise<Author[]> {
+  try {
+    const res = await api.get<any[]>("/writers");
+    if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
+      return res.data.map(mapBackendWriterToAuthor);
+    }
+  } catch (err) {
+    console.warn("Could not fetch writers from API:", err);
+  }
+  return [];
+}
+
+export async function getArticlesByAuthor(authorSlugOrId: string): Promise<Article[]> {
+  const isMongoId = /^[0-9a-fA-F]{24}$/.test(authorSlugOrId);
+  if (isMongoId) {
+    try {
+      const res = await api.get<any[]>(`/news?writerId=${encodeURIComponent(authorSlugOrId)}&limit=20`);
+      if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
+        return res.data.map(mapBackendNewsToArticle);
+      }
+    } catch {}
+  }
+  const all = await getAllArticles();
+  return all.filter((a) => a.author.slug === authorSlugOrId || a.author.id === authorSlugOrId);
 }
 
 export async function getAuthorBySlug(slug: string): Promise<Author | undefined> {
-  return AUTHORS.find((a) => a.slug === slug);
+  const isMongoId = /^[0-9a-fA-F]{24}$/.test(slug);
+  if (isMongoId) {
+    try {
+      const res = await api.get<any>(`/writers/${slug}`);
+      if (res?.success && res.data) {
+        return mapBackendWriterToAuthor(res.data);
+      }
+    } catch {}
+  }
+  const authors = await getAuthors();
+  return authors.find((a) => a.slug === slug || a.id === slug);
 }
 
 export async function getLatestArticles(limit: number = 10): Promise<Article[]> {
@@ -274,7 +341,8 @@ export async function getLatestArticles(limit: number = 10): Promise<Article[]> 
   } catch (err) {
     console.warn("Using fallback latest articles");
   }
-  return [...ARTICLES]
+  const all = await getAllArticles();
+  return all
     .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
     .slice(0, limit);
 }
@@ -288,7 +356,8 @@ export async function getPopularArticles(limit: number = 8): Promise<Article[]> 
   } catch (err) {
     console.warn("Using fallback popular articles");
   }
-  return [...ARTICLES].sort((a, b) => b.viewsCount - a.viewsCount).slice(0, limit);
+  const all = await getAllArticles();
+  return all.sort((a, b) => b.viewsCount - a.viewsCount).slice(0, limit);
 }
 
 export async function getBreakingNews(): Promise<BreakingNewsItem[]> {
@@ -306,15 +375,38 @@ export async function getBreakingNews(): Promise<BreakingNewsItem[]> {
   } catch (err) {
     console.warn("Using fallback breaking news");
   }
-  return BREAKING_NEWS;
+  return [];
 }
 
 export async function getGalleryItems(): Promise<GalleryItem[]> {
-  return GALLERY_ITEMS;
+  try {
+    const res = await api.get<any[]>("/news?limit=12");
+    if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
+      return res.data.map((n) => {
+        const img =
+          typeof n.featuredImage === "string"
+            ? n.featuredImage
+            : n.featuredImage?.url || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800";
+        return {
+          id: String(n.id || n._id),
+          title: n.title,
+          slug: n.slug || String(n.id),
+          caption: n.imageCaption || n.title,
+          image: img,
+          thumbnail: img,
+          category: n.category?.name || "ছবি",
+          date: formatToBengaliDate(n.publishedDate),
+          photographer: n.photoCredit || "বরিশালের প্রাণ",
+        };
+      });
+    }
+  } catch {}
+  return [];
 }
 
 export async function getGalleryItemBySlug(slug: string): Promise<GalleryItem | undefined> {
-  return GALLERY_ITEMS.find((g) => g.slug === slug);
+  const items = await getGalleryItems();
+  return items.find((g) => g.slug === slug || g.id === slug);
 }
 
 export async function getVideoItems(): Promise<VideoItem[]> {
@@ -358,7 +450,8 @@ export async function searchArticles(
     console.warn("Using local search fallback");
   }
 
-  let filtered = [...ARTICLES];
+  const all = await getAllArticles();
+  let filtered = [...all];
   const q = query.trim().toLowerCase();
 
   if (q) {
@@ -405,7 +498,8 @@ export async function getArchiveArticles(params: {
   category?: string;
   query?: string;
 }): Promise<Article[]> {
-  let list = [...ARTICLES];
+  const all = await getAllArticles();
+  let list = [...all];
 
   if (params.category && params.category !== "all") {
     list = list.filter((a) => a.category.slug === params.category);

@@ -1,66 +1,29 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import MfitAdminNavbar from "@/components/admin/MfitAdminNavbar";
 import MfitAdminSidebar from "@/components/admin/MfitAdminSidebar";
 import TrafficChart from "@/components/admin/TrafficChart";
 import ScrollToTop from "@/components/common/ScrollToTop";
-
-// Recent Articles matching user's timeline design
-const RECENT_ARTICLES = [
-  {
-    time: "10 min",
-    title: "মুদ্রণ ও প্রকাশনা অধিদপ্তরে ২১ ক্যাটাগরির নিয়োগ পরীক্ষার সূচি",
-  },
-  {
-    time: "20 min",
-    title: "স্বাধীনতার প্রশ্নে হারলেও কি টিকবে আলবার্টার আন্দোলন",
-  },
-  {
-    time: "30 min",
-    title: "আসামে দুই দিনে সহস্রাধিক মুসলিম পরিবার উচ্ছেদ, ভাঙা হলো ১০ মসজিদ",
-  },
-  {
-    time: "41 min",
-    title: "কোইকা ও ইউনিসেফের সহায়তায় স্বাবলম্বী ১৮ হাজার তরুণী",
-  },
-  {
-    time: "50 min",
-    title: "ওসমানী উদ্যানে জুলাই স্মৃতিস্তম্ভের উদ্বোধন",
-  },
-  {
-    time: "1 hrs",
-    title: "এআইইউবিতে কম্পিউটিং অ্যাডভান্সমেন্ট সম্মেলন সম্পন্ন",
-  },
-  {
-    time: "1 hrs",
-    title: "দিল্লিতে আত্মপ্রকাশ করল 'লাল হিট জনতা পার্টি'",
-  },
-  {
-    time: "2 hrs",
-    title: "ওসমানী উদ্যান ও জুলাই স্মৃতিস্তম্ভের উদ্বোধন",
-  },
-  {
-    time: "2 hrs",
-    title: "ফাইনালে যেতে বাংলাদেশের সামনে জটিল সমীকরণ",
-  },
-  {
-    time: "3 hrs",
-    title: "রিয়ালের জয় ছাপিয়ে গুলেয়ের 'কনুই' ও মরিনিওর প্রতিক্রিয়া",
-  },
-  {
-    time: "4 hrs",
-    title: "বিশ্ববাজারে অপরিশোধিত জ্বালানি তেলের দাম আরও কমল",
-  },
-  {
-    time: "5 hrs",
-    title: "জাতীয় সংসদ নির্বাচনের কর্মপরিকল্পনা চূড়ান্তে ইসির বৈঠক কাল",
-  },
-];
+import { api } from "@/services/apiClient";
+import { formatToBengaliDate } from "@/services/newsService";
 
 export default function MfitAdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [articles, setArticles] = useState<any[]>([]);
+  const [totalCount, setTotalCount] = useState<number>(54);
+
+  useEffect(() => {
+    api.get<any[]>("/news?limit=15").then((res: any) => {
+      if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
+        setArticles(res.data);
+        if (res.meta?.total) {
+          setTotalCount(res.meta.total);
+        }
+      }
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#F0F4FA] text-[#1E293B] flex flex-col font-sans">
@@ -108,7 +71,7 @@ export default function MfitAdminDashboard() {
                       {/* Stat text block */}
                       <div>
                         <div className="text-[30px] sm:text-[32px] font-extrabold text-[#0A2540] leading-none mb-1">
-                          8470
+                          {totalCount}
                         </div>
                         <span className="text-[12.5px] font-medium text-[#718096]">
                           Show Articles
@@ -133,7 +96,7 @@ export default function MfitAdminDashboard() {
                       {/* Stat text block */}
                       <div>
                         <div className="text-[30px] sm:text-[32px] font-extrabold text-[#0A2540] leading-none mb-1">
-                          8470
+                          {totalCount}
                         </div>
                         <span className="text-[12.5px] font-medium text-[#718096]">
                           Show Articles
@@ -187,32 +150,40 @@ export default function MfitAdminDashboard() {
 
                   {/* Connected Vertical Timeline matching user reference */}
                   <div className="relative">
-                    {RECENT_ARTICLES.map((item, idx) => {
-                      const isLast = idx === RECENT_ARTICLES.length - 1;
-                      return (
-                        <div key={idx} className="relative flex items-start gap-3 group">
-                          {/* Time */}
-                          <span className="text-[12px] sm:text-[13px] font-normal text-[#64748B] w-13 shrink-0 pt-0.5 select-none">
-                            {item.time}
-                          </span>
+                    {articles.length > 0
+                      ? articles.slice(0, 12).map((item, idx) => {
+                          const isLast = idx === Math.min(articles.length, 12) - 1;
+                          return (
+                            <div key={item.id || idx} className="relative flex items-start gap-3 group">
+                              {/* Time */}
+                              <span className="text-[11.5px] sm:text-[12px] font-normal text-[#64748B] w-14 shrink-0 pt-0.5 select-none truncate">
+                                {formatToBengaliDate(item.publishedDate || item.createdAt)}
+                              </span>
 
-                          {/* Timeline column: Vertical Line + Green Dot */}
-                          <div className="relative flex flex-col items-center shrink-0 self-stretch">
-                            {/* Continuous connecting vertical line behind the dot */}
-                            {!isLast && (
-                              <span className="absolute top-2.5 bottom-0 w-[2px] bg-[#EEF2F6] -translate-x-1/2 left-1/2" />
-                            )}
-                            {/* Green circular dot */}
-                            <span className="relative z-10 w-2.5 h-2.5 rounded-full bg-[#10B981] ring-2 ring-white shrink-0 mt-1.5 shadow-xs" />
+                              {/* Timeline column: Vertical Line + Green Dot */}
+                              <div className="relative flex flex-col items-center shrink-0 self-stretch">
+                                {!isLast && (
+                                  <span className="absolute top-2.5 bottom-0 w-[2px] bg-[#EEF2F6] -translate-x-1/2 left-1/2" />
+                                )}
+                                <span className="relative z-10 w-2.5 h-2.5 rounded-full bg-[#10B981] ring-2 ring-white shrink-0 mt-1.5 shadow-xs" />
+                              </div>
+
+                              {/* Bengali Headline */}
+                              <Link
+                                href={`/article/${item.slug || item.id}`}
+                                className="text-[13px] sm:text-[13.5px] font-medium text-[#1E293B] group-hover:text-[#2F54EB] transition-colors leading-[1.45] cursor-pointer line-clamp-2 pb-4"
+                              >
+                                {item.title}
+                              </Link>
+                            </div>
+                          );
+                        })
+                      : Array.from({ length: 6 }).map((_, idx) => (
+                          <div key={idx} className="flex items-center gap-3 py-2 animate-pulse">
+                            <div className="h-3 w-12 bg-gray-200 rounded" />
+                            <div className="h-3.5 flex-1 bg-gray-200 rounded" />
                           </div>
-
-                          {/* Bengali Headline */}
-                          <span className="text-[13px] sm:text-[13.5px] font-medium text-[#1E293B] group-hover:text-[#2F54EB] transition-colors leading-[1.45] cursor-pointer line-clamp-2 pb-4">
-                            {item.title}
-                          </span>
-                        </div>
-                      );
-                    })}
+                        ))}
                   </div>
                 </div>
               </div>

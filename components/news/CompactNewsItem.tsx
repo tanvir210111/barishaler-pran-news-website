@@ -9,6 +9,7 @@ interface CompactItemProps {
 }
 
 export default function CompactNewsItem({ article, index }: CompactItemProps) {
+  if (!article) return null;
   return (
     <div className="py-2.5 border-b border-[#E2E6EB] last:border-b-0 group">
       <div className="flex items-start gap-2.5">

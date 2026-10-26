@@ -11,14 +11,16 @@ interface MediumCardProps {
 }
 
 export default function MediumNewsCard({ article, showCategory = true }: MediumCardProps) {
+  if (!article) return null;
+  const imgUrl = typeof article.featuredImage === "string" ? article.featuredImage : article.featuredImage?.url || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800";
   return (
     <article className="bg-white rounded-lg border border-[#E2E6EB] shadow-xs hover:shadow-md transition-shadow overflow-hidden flex flex-col h-full group">
       {/* Image */}
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-100">
         <Link href={`/news/${article.slug}`} className="block w-full h-full">
           <Image
-            src={article.featuredImage.url}
-            alt={article.featuredImage.alt || article.title}
+            src={imgUrl}
+            alt={article.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
             className="object-cover group-hover:scale-105 transition-transform duration-300"

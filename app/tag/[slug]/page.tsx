@@ -13,11 +13,8 @@ interface TagPageProps {
 
 export async function generateMetadata({ params }: TagPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const tag = TAGS.find((t) => t.slug === slug);
-
-  if (!tag) {
-    return { title: "ট্যাগ পাওয়া যায়নি | বরিশালের প্রাণ" };
-  }
+  const decoded = decodeURIComponent(slug);
+  const tag = TAGS.find((t) => t.slug === slug) || { name: decoded, slug };
 
   return {
     title: `#${tag.name} বিষয়ক সংবাদ | বরিশালের প্রাণ`,
@@ -31,11 +28,8 @@ export async function generateStaticParams() {
 
 export default async function TagPage({ params }: TagPageProps) {
   const { slug } = await params;
-  const tag = TAGS.find((t) => t.slug === slug);
-
-  if (!tag) {
-    notFound();
-  }
+  const decoded = decodeURIComponent(slug);
+  const tag = TAGS.find((t) => t.slug === slug) || { name: decoded, slug };
 
   const articles = await getArticlesByTag(slug);
 

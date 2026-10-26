@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getAuthorBySlug, getArticlesByAuthor, AUTHORS } from "@/services/newsService";
+import { getAuthorBySlug, getArticlesByAuthor, getAuthors } from "@/services/newsService";
 import HorizontalNewsCard from "@/components/news/HorizontalNewsCard";
 import AdvertisementPlaceholder from "@/components/news/AdvertisementPlaceholder";
 import { User, Mail, MapPin, ChevronRight, BookOpen } from "lucide-react";
@@ -27,7 +27,8 @@ export async function generateMetadata({ params }: AuthorPageProps): Promise<Met
 }
 
 export async function generateStaticParams() {
-  return AUTHORS.map((a) => ({ slug: a.slug }));
+  const authors = await getAuthors();
+  return authors.map((a) => ({ slug: a.slug }));
 }
 
 export default async function AuthorProfilePage({ params }: AuthorPageProps) {

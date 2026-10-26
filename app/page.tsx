@@ -10,8 +10,13 @@ import {
   getGalleryItems,
   getVideoItems,
 } from "@/services/newsService";
-import { CATEGORIES, ARTICLES } from "@/data/mockNews";
 import { Article } from "@/types/news";
+
+const getImg = (img: any): string => {
+  if (typeof img === "string" && img) return img;
+  if (img && typeof img === "object" && img.url) return img.url;
+  return "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800";
+};
 import LeadNewsCard from "@/components/news/LeadNewsCard";
 import MediumNewsCard from "@/components/news/MediumNewsCard";
 import CompactNewsItem from "@/components/news/CompactNewsItem";
@@ -36,108 +41,22 @@ export default async function HomePage() {
   // Category specific articles
   const nationalArticles = await getArticlesByCategory("national");
   const politicsArticles = await getArticlesByCategory("politics");
-  
-  const latestExcludeIds = [
-    "new-latest-1", "new-latest-2", "new-latest-3", "new-latest-4", "new-latest-5", "new-latest-6",
-    "latest-1", "latest-2", "latest-3", "latest-4", "latest-5", "latest-6", "latest-7", "latest-8", "latest-9"
-  ];
 
-  // National section articles (Screenshot 1: 1 Big Lead on Left + 3 Horizontal Cards on Right)
-  const nationalLeadArticle =
-    nationalArticles.find((a) => a.id === "art-1") ||
-    nationalArticles.find((a) => !latestExcludeIds.includes(a.id)) ||
-    nationalArticles[0] ||
-    leadArticle;
+  // National section articles (1 Big Lead on Left + 3 Horizontal Cards on Right)
+  const nationalLeadArticle = nationalArticles[0] || leadArticle;
+  const nationalSideArticles = nationalArticles.slice(1, 4).length > 0
+    ? nationalArticles.slice(1, 4)
+    : featuredArticles.slice(0, 3);
 
-  const nationalSideArticles = [
-    ARTICLES.find((a) => a.id === "art-4"),
-    ARTICLES.find((a) => a.id === "art-7"),
-    ARTICLES.find((a) => a.id === "art-8"),
-    ...nationalArticles.filter((a) => a.id !== nationalLeadArticle.id),
-    ...politicsArticles.filter((a) => a.id !== nationalLeadArticle.id),
-  ].filter(
-    (a, idx, arr): a is Article =>
-      Boolean(a) &&
-      arr.findIndex((x) => x?.id === a?.id) === idx &&
-      a?.id !== nationalLeadArticle.id &&
-      a?.id !== "latest-9"
-  ).slice(0, 3);
-
-  const NATIONAL_NEWS_TIMES: Record<string, string> = {
-    "art-1": "২ ঘণ্টা আগে",
-    "art-4": "৩ ঘণ্টা আগে",
-    "art-7": "৪ ঘণ্টা আগে",
-    "art-8": "৩ ঘণ্টা আগে",
-  };
-
-  // Popular articles for Screenshot 2 continuous right-to-left marquee
-  const popularShotIds = [
-    "popular-shot-1",
-    "popular-shot-2",
-    "popular-shot-3",
-    "popular-shot-4",
-  ];
-  const popularShotArticles = popularShotIds
-    .map((id) => ARTICLES.find((a) => a.id === id))
-    .filter(Boolean) as Article[];
-
-  const otherPopular = popularArticles.filter((a) => !popularShotIds.includes(a.id));
-  const popularList = [...popularShotArticles, ...otherPopular];
-  const popularLoop = [...popularList, ...popularList];
-
-  const POPULAR_TIMES: Record<string, string> = {
-    "popular-shot-1": "১ ঘণ্টা আগে",
-    "popular-shot-2": "৩ ঘণ্টা আগে",
-    "popular-shot-3": "২ ঘণ্টা আগে",
-    "popular-shot-4": "১ ঘণ্টা আগে",
-    "art-1": "২ ঘণ্টা আগে",
-    "art-2": "৩ ঘণ্টা আগে",
-    "art-3": "৪ ঘণ্টা আগে",
-    "art-6": "৫ ঘণ্টা আগে",
-    "art-10": "৬ ঘণ্টা আগে",
-  };
+  // Popular articles for marquee
+  const popularList = popularArticles.length > 0 ? popularArticles : latestArticles.slice(0, 8);
 
   // Latest News mapping:
   // Left part: 9 items (Image on Top, Title & Time below) in a 3x3 grid
-  const leftLatestArticles = [
-    latestArticles.find((a) => a.id === "new-latest-1") || latestArticles[0],
-    latestArticles.find((a) => a.id === "new-latest-2") || latestArticles[1],
-    latestArticles.find((a) => a.id === "new-latest-3") || latestArticles[2],
-    latestArticles.find((a) => a.id === "latest-1") || latestArticles[6],
-    latestArticles.find((a) => a.id === "latest-2") || latestArticles[7],
-    latestArticles.find((a) => a.id === "latest-4") || latestArticles[8],
-    latestArticles.find((a) => a.id === "latest-5") || latestArticles[9],
-    latestArticles.find((a) => a.id === "latest-7") || latestArticles[10],
-    latestArticles.find((a) => a.id === "latest-8") || latestArticles[11],
-  ].filter(Boolean);
+  const leftLatestArticles = latestArticles.slice(0, 9);
 
   // Right part: 6 items (Title on Left, Image on Right)
-  const rightLatestArticles = [
-    latestArticles.find((a) => a.id === "new-latest-4") || latestArticles[3],
-    latestArticles.find((a) => a.id === "new-latest-5") || latestArticles[4],
-    latestArticles.find((a) => a.id === "new-latest-6") || latestArticles[5],
-    latestArticles.find((a) => a.id === "latest-3") || latestArticles[12],
-    latestArticles.find((a) => a.id === "latest-6") || latestArticles[13],
-    latestArticles.find((a) => a.id === "latest-9") || latestArticles[14] || latestArticles[0],
-  ].filter(Boolean);
-
-  const LATEST_NEWS_TIMES: Record<string, string> = {
-    "new-latest-1": "৩ মিনিট আগে",
-    "new-latest-2": "৪ মিনিট আগে",
-    "new-latest-3": "১১ মিনিট আগে",
-    "new-latest-4": "১ ঘণ্টা আগে",
-    "new-latest-5": "৩ ঘণ্টা আগে",
-    "new-latest-6": "৩ ঘণ্টা আগে",
-    "latest-1": "১২ মিনিট আগে",
-    "latest-2": "২ ঘণ্টা আগে",
-    "latest-3": "৫ ঘণ্টা আগে",
-    "latest-4": "২ ঘণ্টা আগে",
-    "latest-5": "৩৫ মিনিট আগে",
-    "latest-6": "২ ঘণ্টা আগে",
-    "latest-7": "১২ মিনিট আগে",
-    "latest-8": "২ ঘণ্টা আগে",
-    "latest-9": "৬ ঘণ্টা আগে",
-  };
+  const rightLatestArticles = latestArticles.slice(9, 15);
 
   const internationalArticles = await getArticlesByCategory("international");
   const sportsArticles = await getArticlesByCategory("sports");
@@ -189,7 +108,7 @@ export default async function HomePage() {
                       className="block relative aspect-[16/10] w-full overflow-hidden rounded-xs bg-gray-100 mb-2.5"
                     >
                       <Image
-                        src={art.featuredImage.url}
+                        src={getImg(art.featuredImage)}
                         alt={art.title}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
@@ -204,7 +123,7 @@ export default async function HomePage() {
                   </div>
                   <div className="flex items-center gap-1.5 text-[12.5px] text-[#626B75] mt-auto pt-1">
                     <Clock className="w-4 h-4 text-gray-400" />
-                    <span>{LATEST_NEWS_TIMES[art.id] || art.publishedAtBengali}</span>
+                    <span>{art.publishedAtBengali}</span>
                   </div>
                 </article>
               ))}
@@ -238,12 +157,12 @@ export default async function HomePage() {
                     </h3>
                     <div className="flex items-center gap-1 text-[12px] sm:text-[12.5px] text-[#626B75]">
                       <Clock className="w-3.5 h-3.5 text-gray-400" />
-                      <span>{LATEST_NEWS_TIMES[art.id] || art.publishedAtBengali}</span>
+                      <span>{art.publishedAtBengali}</span>
                     </div>
                   </div>
                   <div className="relative w-24 sm:w-26 aspect-[16/10] shrink-0 rounded-xs overflow-hidden bg-gray-100 border border-gray-100">
                     <Image
-                      src={art.featuredImage.url}
+                      src={getImg(art.featuredImage)}
                       alt={art.title}
                       fill
                       sizes="(max-width: 640px) 96px, 104px"
@@ -258,7 +177,7 @@ export default async function HomePage() {
       </section>
 
       {/* 3. Most Read Section (সর্বাধিক পঠিত) - Above National, User-drag/swipe scroll with visual indicators */}
-      <PopularScrollSection articles={popularList} times={POPULAR_TIMES} />
+      <PopularScrollSection articles={popularList} />
 
       {/* 4. National News Showcase (জাতীয়) - Matching User Screenshot 1 Style (No gaps between right 3 cards, matching height) */}
       <section className="bg-white rounded-lg border border-[#E2E6EB] shadow-xs p-4 sm:p-5">
@@ -286,8 +205,8 @@ export default async function HomePage() {
                 className="block relative aspect-[16/7] sm:aspect-[16/7.5] w-full overflow-hidden rounded-xs bg-gray-100 mb-2"
               >
                 <Image
-                  src={nationalLeadArticle.featuredImage.url}
-                  alt={nationalLeadArticle.featuredImage.alt || nationalLeadArticle.title}
+                  src={getImg(nationalLeadArticle.featuredImage)}
+                  alt={nationalLeadArticle.title}
                   fill
                   sizes="(max-width: 1024px) 100vw, 58vw"
                   priority
@@ -301,7 +220,7 @@ export default async function HomePage() {
               </h3>
               <div className="flex items-center gap-1.5 text-xs text-[#626B75]">
                 <Clock className="w-3.5 h-3.5 text-gray-400" />
-                <span>{NATIONAL_NEWS_TIMES[nationalLeadArticle.id] || nationalLeadArticle.publishedAtBengali}</span>
+                <span>{nationalLeadArticle.publishedAtBengali}</span>
               </div>
             </article>
           </div>
@@ -318,7 +237,7 @@ export default async function HomePage() {
               >
                 <div className="relative w-36 sm:w-40 lg:w-44 aspect-[16/10] shrink-0 rounded-xs overflow-hidden bg-gray-100 border border-gray-100">
                   <Image
-                    src={art.featuredImage.url}
+                    src={getImg(art.featuredImage)}
                     alt={art.title}
                     fill
                     sizes="(max-width: 640px) 144px, 176px"
@@ -331,7 +250,7 @@ export default async function HomePage() {
                   </h4>
                   <div className="flex items-center gap-1 text-xs sm:text-[12.5px] text-[#626B75]">
                     <Clock className="w-3.5 h-3.5 text-gray-400" />
-                    <span>{NATIONAL_NEWS_TIMES[art.id] || art.publishedAtBengali}</span>
+                    <span>{art.publishedAtBengali}</span>
                   </div>
                 </div>
               </Link>
@@ -436,7 +355,7 @@ export default async function HomePage() {
               <article className="group">
                 <Link href={`/news/${internationalArticles[0].slug}`} className="block relative aspect-[16/10] overflow-hidden mb-2 rounded-xs bg-gray-100">
                   <Image
-                    src={internationalArticles[0].featuredImage.url}
+                    src={getImg(internationalArticles[0].featuredImage)}
                     alt={internationalArticles[0].title}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
@@ -459,7 +378,7 @@ export default async function HomePage() {
                 >
                   <div className="relative w-16 h-12 shrink-0 rounded-xs overflow-hidden bg-gray-100">
                     <Image
-                      src={art.featuredImage.url}
+                      src={getImg(art.featuredImage)}
                       alt={art.title}
                       fill
                       sizes="64px"
@@ -490,7 +409,7 @@ export default async function HomePage() {
               <article className="group">
                 <Link href={`/news/${economyArticles[0].slug}`} className="block relative aspect-[16/10] overflow-hidden mb-2 rounded-xs bg-gray-100">
                   <Image
-                    src={economyArticles[0].featuredImage.url}
+                    src={getImg(economyArticles[0].featuredImage)}
                     alt={economyArticles[0].title}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
@@ -513,7 +432,7 @@ export default async function HomePage() {
                 >
                   <div className="relative w-16 h-12 shrink-0 rounded-xs overflow-hidden bg-gray-100">
                     <Image
-                      src={art.featuredImage.url}
+                      src={getImg(art.featuredImage)}
                       alt={art.title}
                       fill
                       sizes="64px"
@@ -544,7 +463,7 @@ export default async function HomePage() {
               <article className="group">
                 <Link href={`/news/${techArticles[0].slug}`} className="block relative aspect-[16/10] overflow-hidden mb-2 rounded-xs bg-gray-100">
                   <Image
-                    src={techArticles[0].featuredImage.url}
+                    src={getImg(techArticles[0].featuredImage)}
                     alt={techArticles[0].title}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
@@ -567,7 +486,7 @@ export default async function HomePage() {
                 >
                   <div className="relative w-16 h-12 shrink-0 rounded-xs overflow-hidden bg-gray-100">
                     <Image
-                      src={art.featuredImage.url}
+                      src={getImg(art.featuredImage)}
                       alt={art.title}
                       fill
                       sizes="64px"
@@ -679,15 +598,15 @@ export default async function HomePage() {
       {/* 9. সারাদেশ, ক্যাম্পাস ও ইসলাম (Countrywide, Campus & Islam) */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
         <CategoryNewsSection
-          category={CATEGORIES.find((c) => c.slug === "countrywide") || CATEGORIES[5]}
+          category={{ id: "cat-countrywide", name: "সারাদেশ", slug: "countrywide" }}
           articles={countrywideArticles}
         />
         <CategoryNewsSection
-          category={CATEGORIES.find((c) => c.slug === "campus") || CATEGORIES[6]}
+          category={{ id: "cat-campus", name: "ক্যাম্পাস", slug: "campus" }}
           articles={campusArticles}
         />
         <CategoryNewsSection
-          category={CATEGORIES.find((c) => c.slug === "islam") || CATEGORIES[7]}
+          category={{ id: "cat-islam", name: "ইসলাম", slug: "islam" }}
           articles={islamArticles}
         />
       </section>

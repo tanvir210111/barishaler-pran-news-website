@@ -1,12 +1,12 @@
 import React from "react";
 import Link from "next/link";
-import { CATEGORIES } from "@/data/mockNews";
 import { Mail, Phone, MapPin } from "lucide-react";
 import SocialMediaIcons from "@/components/common/SocialMediaIcons";
-import { getSiteSettings } from "@/services/newsService";
+import { getSiteSettings, getCategories } from "@/services/newsService";
 
 export default async function Footer() {
   const settings = await getSiteSettings();
+  const categories = await getCategories();
   const currentYear = 2026;
 
   const quickLinks = [
@@ -75,7 +75,7 @@ export default async function Footer() {
               সংবাদ বিভাগ
             </h4>
             <ul className="grid grid-cols-2 gap-y-2 gap-x-3 text-sm">
-              {CATEGORIES.slice(0, 10).map((cat) => (
+              {categories.slice(0, 10).map((cat) => (
                 <li key={cat.slug}>
                   <Link
                     href={`/category/${cat.slug}`}
@@ -94,7 +94,7 @@ export default async function Footer() {
               অন্যান্য বিভাগ
             </h4>
             <ul className="grid grid-cols-2 gap-y-2 gap-x-3 text-sm">
-              {CATEGORIES.slice(10).map((cat) => (
+              {categories.slice(10).map((cat) => (
                 <li key={cat.slug}>
                   <Link
                     href={`/category/${cat.slug}`}

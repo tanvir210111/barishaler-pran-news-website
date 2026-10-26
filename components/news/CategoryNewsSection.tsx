@@ -4,6 +4,12 @@ import Image from "next/image";
 import { Article, Category } from "@/types/news";
 import { ChevronRight, Clock } from "lucide-react";
 
+const getImg = (img: any): string => {
+  if (typeof img === "string" && img) return img;
+  if (img && typeof img === "object" && img.url) return img.url;
+  return "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800";
+};
+
 interface CategorySectionProps {
   category: Category;
   articles: Article[];
@@ -52,8 +58,8 @@ export default function CategoryNewsSection({
               className="block relative aspect-[16/10] overflow-hidden mb-2 rounded-xs bg-gray-100"
             >
               <Image
-                src={lead.featuredImage.url}
-                alt={lead.featuredImage.alt || lead.title}
+                src={getImg(lead.featuredImage)}
+                alt={lead.featuredImage?.alt || lead.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -78,7 +84,7 @@ export default function CategoryNewsSection({
           >
             <div className="relative w-16 h-12 shrink-0 rounded-xs overflow-hidden bg-gray-100">
               <Image
-                src={art.featuredImage.url}
+                src={getImg(art.featuredImage)}
                 alt={art.title}
                 fill
                 sizes="64px"

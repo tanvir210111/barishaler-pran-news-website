@@ -2,7 +2,7 @@ import React from "react";
 import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { AUTHORS } from "@/data/mockNews";
+import { getAuthors } from "@/services/newsService";
 import { ShieldCheck, Award, Eye, Users, ChevronRight, CheckCircle2 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -10,7 +10,8 @@ export const metadata: Metadata = {
   description: "বরিশালের প্রাণ - সত্যের সঙ্গে, মানুষের পাশে। নিরপেক্ষ ও দায়িত্বশীল সাংবাদিকতায় প্রতিশ্রুতিবদ্ধ অনলাইন সংবাদপত্র।",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const authors = await getAuthors();
   return (
     <div className="space-y-6">
       <nav aria-label="ব্রেডক্রাম্ব" className="text-xs text-[#626B75] flex items-center gap-1.5">
@@ -86,7 +87,7 @@ export default function AboutPage() {
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {AUTHORS.map((author) => (
+            {authors.map((author) => (
               <div key={author.id} className="p-4 rounded-lg bg-[#f8f9fa] border border-[#E2E6EB] flex items-center gap-3">
                 <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 border border-gray-300">
                   <Image

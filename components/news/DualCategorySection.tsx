@@ -4,6 +4,12 @@ import Image from "next/image";
 import { Article } from "@/types/news";
 import { ChevronRight, Clock, User } from "lucide-react";
 
+const getImg = (img: any): string => {
+  if (typeof img === "string" && img) return img;
+  if (img && typeof img === "object" && img.url) return img.url;
+  return "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800";
+};
+
 interface CategoryBlockProps {
   title: string;
   slug: string;
@@ -38,8 +44,8 @@ function CategoryColumn({ title, slug, articles }: CategoryBlockProps) {
           <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xs bg-gray-100 mb-2.5">
             <Link href={`/news/${lead.slug}`} className="block w-full h-full">
               <Image
-                src={lead.featuredImage.url}
-                alt={lead.featuredImage.alt || lead.title}
+                src={getImg(lead.featuredImage)}
+                alt={lead.featuredImage?.alt || lead.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -91,7 +97,7 @@ function CategoryColumn({ title, slug, articles }: CategoryBlockProps) {
               className="block relative aspect-[16/10] w-full overflow-hidden rounded-xs bg-gray-100 mb-2"
             >
               <Image
-                src={art.featuredImage.url}
+                src={getImg(art.featuredImage)}
                 alt={art.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 25vw"
