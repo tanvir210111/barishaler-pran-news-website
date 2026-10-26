@@ -7,7 +7,7 @@ import { ArticleContentBlock } from "@/types/news";
 
 interface ContainerProps {
   title: string;
-  contentBlocks: ArticleContentBlock[];
+  contentBlocks: ArticleContentBlock[] | string;
   featuredImage: {
     url: string;
     caption: string;
@@ -73,70 +73,77 @@ export default function ArticleToolbarContainer({
 
       {/* Article Body Content with Dynamic Font Scaling */}
       <div className={`article-body text-[#202124] space-y-4 ${getFontSizeClass()}`}>
-        {contentBlocks.map((block, index) => {
-          if (block.type === "paragraph") {
-            return (
-              <p key={index} className="text-[#202124]">
-                {block.text}
-              </p>
-            );
-          }
+        {typeof contentBlocks === "string" ? (
+          <div
+            className="prose prose-lg max-w-none text-[#202124] leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: contentBlocks }}
+          />
+        ) : (
+          contentBlocks.map((block, index) => {
+            if (block.type === "paragraph") {
+              return (
+                <p key={index} className="text-[#202124]">
+                  {block.text}
+                </p>
+              );
+            }
 
-          if (block.type === "heading") {
-            return (
-              <h2
-                key={index}
-                className="text-xl sm:text-2xl font-bold text-[#0756A4] pt-3 pb-1 border-b border-gray-200"
-              >
-                {block.text}
-              </h2>
-            );
-          }
+            if (block.type === "heading") {
+              return (
+                <h2
+                  key={index}
+                  className="text-xl sm:text-2xl font-bold text-[#0756A4] pt-3 pb-1 border-b border-gray-200"
+                >
+                  {block.text}
+                </h2>
+              );
+            }
 
-          if (block.type === "quote") {
-            return (
-              <blockquote
-                key={index}
-                className="my-4 border-l-4 border-[#087A43] pl-4 py-2 bg-[#EAF5EE] text-[#05407c] font-medium italic rounded-r"
-              >
-                {block.text}
-              </blockquote>
-            );
-          }
+            if (block.type === "quote") {
+              return (
+                <blockquote
+                  key={index}
+                  className="my-4 border-l-4 border-[#087A43] pl-4 py-2 bg-[#EAF5EE] text-[#05407c] font-medium italic rounded-r"
+                >
+                  {block.text}
+                </blockquote>
+              );
+            }
 
-          if (block.type === "image" && block.url) {
-            return (
-              <div key={index} className="my-5 rounded overflow-hidden border border-gray-200 bg-gray-50">
-                <div className="relative aspect-[16/9] w-full">
-                  <Image
-                    src={block.url}
-                    alt={block.caption || "প্রতিবেদন ছবি"}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 800px"
-                    className="object-cover"
-                  />
+            if (block.type === "image" && block.url) {
+              return (
+                <div key={index} className="my-5 rounded overflow-hidden border border-gray-200 bg-gray-50">
+                  <div className="relative aspect-[16/9] w-full">
+                    <Image
+                      src={block.url}
+                      alt={block.caption || "প্রতিবেদন ছবি"}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 800px"
+                      className="object-cover"
+                    />
+                  </div>
+                  {block.caption && (
+                    <p className="p-2 text-xs text-gray-600 italic text-center bg-gray-100">
+                      {block.caption} {block.credit && `(ছবি: ${block.credit})`}
+                    </p>
+                  )}
                 </div>
-                {block.caption && (
-                  <p className="p-2 text-xs text-gray-600 italic text-center bg-gray-100">
-                    {block.caption} {block.credit && `(ছবি: ${block.credit})`}
-                  </p>
-                )}
-              </div>
-            );
-          }
+              );
+            }
 
-          if (block.type === "list" && block.items) {
-            return (
-              <ul key={index} className="list-disc list-inside space-y-1.5 my-3 pl-2 text-gray-800">
-                {block.items.map((item, itemIdx) => (
-                  <li key={itemIdx}>{item}</li>
-                ))}
-              </ul>
-            );
-          }
+            if (block.type === "list" && block.items) {
+              return (
+                <ul key={index} className="list-disc list-inside space-y-1.5 my-3 pl-2 text-gray-800">
+                  {block.items.map((item, itemIdx) => (
+                    <li key={itemIdx}>{item}</li>
+                  ))}
+                </ul>
+              );
+            }
 
-          return null;
-        })}
+            return null;
+          })
+        )}
       </div>
     </div>
   );

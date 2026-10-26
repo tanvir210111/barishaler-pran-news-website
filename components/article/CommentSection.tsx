@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Comment } from "@/types/news";
 import {
+  fetchComments,
   getStoredComments,
   saveComment,
   saveReply,
@@ -37,7 +38,13 @@ export default function CommentSection({ articleId }: CommentSectionProps) {
   const [visibleCount, setVisibleCount] = useState(5);
 
   useEffect(() => {
-    setComments(getStoredComments(articleId));
+    let isMounted = true;
+    fetchComments(articleId).then((data) => {
+      if (isMounted) setComments(data);
+    });
+    return () => {
+      isMounted = false;
+    };
   }, [articleId]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -58,17 +65,17 @@ export default function CommentSection({ articleId }: CommentSectionProps) {
       return;
     }
 
-    const newComment = saveComment(articleId, {
+    saveComment(articleId, {
       articleId,
       authorName: authorName.trim(),
       authorEmail: authorEmail.trim() || undefined,
       content: content.trim(),
+    }).then((newComment) => {
+      setComments((prev) => [newComment, ...prev]);
+      setContent("");
+      setSuccessMessage("আপনার মন্তব্য সফলভাবে প্রকাশিত হয়েছে।");
+      setTimeout(() => setSuccessMessage(""), 4000);
     });
-
-    setComments((prev) => [newComment, ...prev]);
-    setContent("");
-    setSuccessMessage("আপনার মন্তব্য সফলভাবে প্রকাশিত হয়েছে (ডেমো সংরক্ষিত)।");
-    setTimeout(() => setSuccessMessage(""), 4000);
   };
 
   const handleReplySubmit = (parentId: string, e: React.FormEvent) => {
@@ -78,17 +85,18 @@ export default function CommentSection({ articleId }: CommentSectionProps) {
       return;
     }
 
-    const reply = saveReply(articleId, parentId, replyName.trim(), replyContent.trim());
-    if (reply) {
-      setComments(getStoredComments(articleId));
-      setReplyingToId(null);
-      setReplyName("");
-      setReplyContent("");
-    }
+    saveReply(articleId, parentId, replyName.trim(), replyContent.trim()).then((reply) => {
+      if (reply) {
+        setComments(getStoredComments(articleId));
+        setReplyingToId(null);
+        setReplyName("");
+        setReplyContent("");
+      }
+    });
   };
 
-  const handleLike = (commentId: string) => {
-    toggleCommentLike(articleId, commentId);
+  const handleLike = async (commentId: string) => {
+    await toggleCommentLike(articleId, commentId);
     setComments(getStoredComments(articleId));
   };
 

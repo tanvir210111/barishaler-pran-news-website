@@ -2,20 +2,28 @@
 
 import React, { useState } from "react";
 import { Share2, Check, Copy, MessageCircle, Send } from "lucide-react";
+import { trackShare } from "@/services/newsService";
 
 interface ShareButtonsProps {
   url?: string;
   title: string;
   compact?: boolean;
+  newsId?: string;
 }
 
-export default function ShareButtons({ url, title, compact = false }: ShareButtonsProps) {
+export default function ShareButtons({ url, title, compact = false, newsId }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
   const shareUrl = url || (typeof window !== "undefined" ? window.location.href : "https://barishalerpran.com");
   const encodedUrl = encodeURIComponent(shareUrl);
   const encodedTitle = encodeURIComponent(title);
+
+  const handleShareClick = () => {
+    if (newsId) {
+      trackShare(newsId);
+    }
+  };
 
   const handleCopy = async () => {
     try {

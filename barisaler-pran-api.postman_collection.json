@@ -1,0 +1,2171 @@
+{
+  "info": {
+    "_postman_id": "b9f2913a-4467-4d6d-8c17-barisaler-pran",
+    "name": "Barisaler Pran API",
+    "description": "Complete Postman collection for Barisaler Pran Daily Newspaper Backend API covering News, WYSIWYG Content, Comments, Replies, Like/Dislike Reactions, Categories, Topics, Writers, Our Family Team, and Bangladesh Locations.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5001/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "newsId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "newsSlug",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "commentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "categoryId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "topicId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "teamId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "writerId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register User / Reader",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"পাঠক করিম\",\n  \"email\": \"reader@example.com\",\n  \"password\": \"123456\",\n  \"phone\": \"01700000000\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.accessToken) {",
+                  "    pm.collectionVariables.set('token', json.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"reader@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "profile"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"123456\",\n  \"newPassword\": \"654321\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. News Articles (Public & Staff)",
+      "item": [
+        {
+          "name": "Get All News (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/news?page=1&limit=10&searchTerm=&division=&district=&upazila=&isBreaking=&isFeatured=&isTrending=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "searchTerm",
+                  "value": ""
+                },
+                {
+                  "key": "categoryId",
+                  "value": "{{categoryId}}",
+                  "disabled": true
+                },
+                {
+                  "key": "topicId",
+                  "value": "{{topicId}}",
+                  "disabled": true
+                },
+                {
+                  "key": "division",
+                  "value": "বরিশাল",
+                  "disabled": true
+                },
+                {
+                  "key": "district",
+                  "value": "বরিশাল",
+                  "disabled": true
+                },
+                {
+                  "key": "upazila",
+                  "value": "বরিশাল সদর",
+                  "disabled": true
+                },
+                {
+                  "key": "isBreaking",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "isFeatured",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "isTrending",
+                  "value": "true",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Homepage Aggregated Layout (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/news/home",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "home"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Single News by Slug (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/news/slug/{{newsSlug}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "slug",
+                "{{newsSlug}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Single News by ID (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/news/{{newsId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "{{newsId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Recent News (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/news/recent?limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "recent"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Breaking News (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/news/breaking?limit=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "breaking"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Trending News (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/news/trending?limit=6",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "trending"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "6"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Slider News (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/news/slider?limit=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "slider"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Video News Gallery (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/news/videos?limit=6",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "videos"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "6"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create News Post (Protected: Staff)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.id) {",
+                  "    pm.collectionVariables.set('newsId', json.data.id);",
+                  "    pm.collectionVariables.set('newsSlug', json.data.slug);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"বরিশালে নতুন উন্নয়ন প্রকল্পের সূচনা\",\n  \"subtitle\": \"যোগাযোগ ও অবকাঠামো উন্নয়নে বড় উদ্যোগ\",\n  \"content\": \"<h2>বরিশাল নগরীর সামগ্রিক উন্নয়ন</h2><p>নগরীর ড্রেনেজ ব্যবস্থা ও রাস্তাঘাট সংস্কারে নতুন অর্থ বরাদ্দ দেওয়া হয়েছে।</p><blockquote>জনগণের জীবনযাত্রার মান উন্নয়নই আমাদের মূল লক্ষ্য।</blockquote>\",\n  \"summary\": \"বরিশাল নগরীর সামগ্রিক যোগাযোগ ও ড্রেনেজ ব্যবস্থা আধুনিকায়ন...\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"topicId\": \"{{topicId}}\",\n  \"writerId\": \"{{writerId}}\",\n  \"division\": \"বরিশাল\",\n  \"district\": \"বরিশাল\",\n  \"upazila\": \"বরিশাল সদর\",\n  \"featuredImage\": \"https://images.unsplash.com/photo-1585829365295-ab7cd400c167\",\n  \"imageCaption\": \"বরিশাল নগর উন্নয়ন পরিকল্পনা\",\n  \"youtubeLink\": \"https://www.youtube.com/watch?v=ABCDE\",\n  \"publishStatus\": \"PUBLISHED\",\n  \"isBreaking\": true,\n  \"isFeatured\": true,\n  \"isTrending\": false,\n  \"isSlider\": true,\n  \"tags\": [\"বরিশাল\", \"উন্নয়ন\", \"প্রকল্প\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/news",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update News Post (Protected: Staff)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subtitle\": \"যোগাযোগ ও অবকাঠামো সংস্কারে বিশেষ বরাদ্দ\",\n  \"isBreaking\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/news/{{newsId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "{{newsId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Change News Publish Status (Protected: Admin/Editor)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"PUBLISHED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/news/{{newsId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "{{newsId}}",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get News Drafts (Protected: Staff)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/news/drafts?page=1&limit=10&searchTerm=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "drafts"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "searchTerm",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "1-Click Publish News Draft (Protected: Staff with news.publish)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/news/{{newsId}}/publish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "{{newsId}}",
+                "publish"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1-Click Unpublish Live News to Draft (Protected: Staff with news.publish)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/news/{{newsId}}/unpublish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "{{newsId}}",
+                "unpublish"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1-Click Hide News from Public Site (Protected: Staff with news.publish)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/news/{{newsId}}/hide",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "{{newsId}}",
+                "hide"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1-Click Unhide News (Protected: Staff with news.publish)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/news/{{newsId}}/unhide",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "{{newsId}}",
+                "unhide"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete News Post (Protected: Super Admin ONLY)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/news/{{newsId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "{{newsId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Increment News Share Count (Public)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/news/{{newsId}}/share",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "news",
+                "{{newsId}}",
+                "share"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Comments & Reactions",
+      "item": [
+        {
+          "name": "Get Comments & Nested Replies for News (Public)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/comments/news/{{newsId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comments",
+                "news",
+                "{{newsId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Post Comment on Article (Protected: Login Required)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.id) {",
+                  "    pm.collectionVariables.set('commentId', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"newsId\": \"{{newsId}}\",\n  \"content\": \"খুবই প্রশংসনীয় উদ্যোগ! দ্রুত কাজ শুরু হোক।\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comments"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reply to Comment (Protected: Login Required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"একমত, কাজের মান বজায় রাখা দরকার।\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/comments/{{commentId}}/reply",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comments",
+                "{{commentId}}",
+                "reply"
+              ]
+            }
+          }
+        },
+        {
+          "name": "React Like/Dislike to Comment (Protected: Login Required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"LIKE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/comments/{{commentId}}/react",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comments",
+                "{{commentId}}",
+                "react"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Comment (Protected: Author)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"সংশোধিত মন্তব্য...\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/comments/{{commentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comments",
+                "{{commentId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Comment (Protected: Author or Staff)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/comments/{{commentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "comments",
+                "{{commentId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Categories",
+      "item": [
+        {
+          "name": "Get All Categories (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Category by ID or Slug (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "{{categoryId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Category (Protected: Admin/Editor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.id) {",
+                  "    pm.collectionVariables.set('categoryId', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"জাতীয়\",\n  \"slug\": \"জাতীয়\",\n  \"description\": \"জাতীয় সংবাদ ও সমসাময়িক বিষয়াবলী\",\n  \"order\": 1,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Category (Protected: Admin/Editor)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"হালনাগাদ জাতীয় সংবাদের বিবরণী\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "{{categoryId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Category (Protected: Admin/Editor)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "{{categoryId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Topics",
+      "item": [
+        {
+          "name": "Get All Topics (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/topics?categoryId={{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "topics"
+              ],
+              "query": [
+                {
+                  "key": "categoryId",
+                  "value": "{{categoryId}}",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Topic by ID or Slug (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/topics/{{topicId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "topics",
+                "{{topicId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Topic (Protected: Admin/Editor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.id) {",
+                  "    pm.collectionVariables.set('topicId', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"বাজেট ২০২৬\",\n  \"slug\": \"budget-2026\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"description\": \"জাতীয় বাজেট সম্পর্কিত প্রতিবেদন\",\n  \"order\": 1,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/topics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "topics"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Topic (Protected: Admin/Editor)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"আপডেট বিবরণ\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/topics/{{topicId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "topics",
+                "{{topicId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Topic (Protected: Admin/Editor)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/topics/{{topicId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "topics",
+                "{{topicId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Writers & Our Family Team",
+      "item": [
+        {
+          "name": "Get Our Family Team (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/teams",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "teams"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Team Designation (Protected: Admin/Editor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.id) {",
+                  "    pm.collectionVariables.set('teamId', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"স্টাফ রিপোর্টার\",\n  \"order\": 2,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/teams",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "teams"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Team Designation (Protected: Admin/Editor)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": true,\n  \"order\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/teams/{{teamId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "teams",
+                "{{teamId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Writers (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/writers?searchTerm=&status=active",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "writers"
+              ],
+              "query": [
+                {
+                  "key": "searchTerm",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": "active"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Writer by ID & Articles (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/writers/{{writerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "writers",
+                "{{writerId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Writer (Protected: Admin/Editor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.id) {",
+                  "    pm.collectionVariables.set('writerId', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"গোলাম মাওলা শাওন\",\n  \"email\": \"shaon@example.com\",\n  \"mobile\": \"01700000000\",\n  \"location\": \"বরিশাল\",\n  \"designationId\": \"{{teamId}}\",\n  \"profileImage\": \"https://images.unsplash.com/photo-1534528741775-53994a69daeb\",\n  \"bio\": \"সাংবাদিক ও ফিচার লেখক\",\n  \"status\": \"active\",\n  \"postAbility\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/writers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "writers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Writer Profile & Post Ability (Protected)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"postAbility\": true,\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/writers/{{writerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "writers",
+                "{{writerId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Writer (Protected)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/writers/{{writerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "writers",
+                "{{writerId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Locations (Bangladesh)",
+      "item": [
+        {
+          "name": "Get All Divisions (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/locations/divisions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "locations",
+                "divisions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Districts by Division (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/locations/districts?division=Barishal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "locations",
+                "districts"
+              ],
+              "query": [
+                {
+                  "key": "division",
+                  "value": "Barishal"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Upazilas by District (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/locations/upazilas?district=Barishal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "locations",
+                "upazilas"
+              ],
+              "query": [
+                {
+                  "key": "district",
+                  "value": "Barishal"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Full Location Hierarchy (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/locations/hierarchy",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "locations",
+                "hierarchy"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Web Access & Staff Management",
+      "item": [
+        {
+          "name": "Get Users Directory (Protected: Managers)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/directory?page=1&limit=10&role=&searchTerm=&status=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "directory"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "role",
+                  "value": ""
+                },
+                {
+                  "key": "searchTerm",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Staff (Protected: Managers)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"বার্তা সম্পাদক\",\n  \"email\": \"editor1@news.com\",\n  \"password\": \"123456\",\n  \"phone\": \"01811111111\",\n  \"role\": \"Editor\",\n  \"canEditDeletePost\": true,\n  \"designation\": \"বার্তা সম্পাদক\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/directory",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "directory"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User Access & Permissions (Protected)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"Editor\",\n  \"canEditDeletePost\": true,\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/directory/{{userId}}/access",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "directory",
+                "{{userId}}",
+                "access"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User Status (Protected)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/directory/{{userId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "directory",
+                "{{userId}}",
+                "status"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. File Uploads",
+      "item": [
+        {
+          "name": "Upload Single Image (Featured/Content)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/files/upload-single",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "files",
+                "upload-single"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Multiple Images",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/files/upload-multiple",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "files",
+                "upload-multiple"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Site Settings & Footer",
+      "item": [
+        {
+          "name": "Get Site Settings (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "settings"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Site Settings (Protected: Admin/Editor)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"siteName\": \"বরিশালের প্রাণ\",\n  \"siteSlogan\": \"সত্যের সন্ধানে অবিচল\",\n  \"officeAddress\": \"সিবি ভবন, সদর রোড, বরিশাল-৮২০০\",\n  \"phone\": \"+৮৮০১৭১২-৩৪৫৬৭৮\",\n  \"email\": \"contact@barisalerpran.com\",\n  \"facebookUrl\": \"https://facebook.com/barisalerpran\",\n  \"youtubeUrl\": \"https://youtube.com/@barisalerpran\",\n  \"whatsappNumber\": \"+8801700000000\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "settings"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "11. Newsletter Subscription",
+      "item": [
+        {
+          "name": "Subscribe to Newsletter (Public)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"reader@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/newsletters/subscribe",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "newsletters",
+                "subscribe"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Newsletter Subscribers (Protected: Staff)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/newsletters/subscribers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "newsletters",
+                "subscribers"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "12. Advertisements Management",
+      "item": [
+        {
+          "name": "Get Ads by Placement (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/ads?placement=HEADER_TOP",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ads"
+              ],
+              "query": [
+                {
+                  "key": "placement",
+                  "value": "HEADER_TOP"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Single Advertisement (Public / Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/ads/{{adId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ads",
+                "{{adId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Track Ad Impression (Public)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/ads/{{adId}}/impression",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ads",
+                "{{adId}}",
+                "impression"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Track Ad Click (Public)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/ads/{{adId}}/click",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ads",
+                "{{adId}}",
+                "click"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Advertisement (Protected: Staff)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.id) {",
+                  "    pm.collectionVariables.set('adId', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"দারাজ ১১.১১ বিগ ক্যাম্পেইন\",\n  \"placement\": \"HOMEPAGE_MIDDLE\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da\",\n  \"targetUrl\": \"https://www.daraz.com.bd\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ads",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ads"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Advertisement (Protected: Staff)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ads/{{adId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ads",
+                "{{adId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Advertisement (Protected: Super Admin ONLY)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ads/{{adId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ads",
+                "{{adId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "13. User, Roles & Permissions Management",
+      "item": [
+        {
+          "name": "Get Permissions Directory (Protected: Managers)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/directory/permissions-list",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "directory",
+                "permissions-list"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Staff with Role & Custom Permissions (Protected: Managers)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.id) {",
+                  "    pm.collectionVariables.set('userId', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"আহমেদ রফিক\",\n  \"email\": \"ahmed.rafiq@barisalerpran.com\",\n  \"password\": \"123456\",\n  \"phone\": \"01711223344\",\n  \"role\": \"Reporter\",\n  \"designation\": \"জ্যেষ্ঠ বরিশাল প্রতিনিধি\",\n  \"permissions\": [\n    \"news.create\",\n    \"news.edit\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/directory",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "directory"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Staff & Users Directory (Protected: Managers)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/directory?page=1&limit=20&role=&status=&searchTerm=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "directory"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "role",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                },
+                {
+                  "key": "searchTerm",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Single User (Protected: Managers)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/directory/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "directory",
+                "{{userId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User Status (Protected: Managers)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/directory/{{userId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "directory",
+                "{{userId}}",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User Role & Permissions (Protected: Managers)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"Editor\",\n  \"designation\": \"সহকারী বার্তা সম্পাদক\",\n  \"permissions\": [\n    \"news.create\",\n    \"news.edit\",\n    \"news.publish\",\n    \"category.manage\",\n    \"topic.manage\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/directory/{{userId}}/access",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "directory",
+                "{{userId}}",
+                "access"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete User (Protected: Super Admin ONLY)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/directory/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "directory",
+                "{{userId}}"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

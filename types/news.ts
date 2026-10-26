@@ -58,9 +58,10 @@ export interface ArticleContentBlock {
 export interface Article {
   id: string;
   title: string;
+  subtitle?: string;
   slug: string;
   summary: string;
-  content: ArticleContentBlock[];
+  content: ArticleContentBlock[] | string;
   category: Category;
   author: Author;
   featuredImage: {
@@ -75,10 +76,22 @@ export interface Article {
   updatedAt?: string;
   readingTimeMinutes: number;
   isLead?: boolean;
+  isSubLead?: boolean;
   isFeatured?: boolean;
   isBreaking?: boolean;
+  isTrending?: boolean;
+  isSlider?: boolean;
   viewsCount: number;
   sharesCount: number;
+  youtubeLink?: string;
+  division?: string;
+  district?: string;
+  upazila?: string;
+  navigation?: {
+    prevNews?: { id: string; title: string; slug: string; featuredImage?: string };
+    nextNews?: { id: string; title: string; slug: string; featuredImage?: string };
+  };
+  relatedNews?: any[];
 }
 
 export interface GalleryItem {
@@ -123,3 +136,26 @@ export interface AdPlacement {
   demoBrand?: string;
   demoText?: string;
 }
+
+export interface SiteSettings {
+  id?: string;
+  siteName: string;
+  siteSlogan?: string;
+  logo?: string;
+  footerLogo?: string;
+  favicon?: string;
+  editorName?: string;
+  publisherName?: string;
+  officeAddress?: string;
+  phone?: string;
+  email?: string;
+  facebookUrl?: string;
+  twitterUrl?: string;
+  youtubeUrl?: string;
+  whatsappNumber?: string;
+  telegramUrl?: string;
+  instagramUrl?: string;
+  linkedinUrl?: string;
+  headerNotice?: string;
+}
+

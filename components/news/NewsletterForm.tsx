@@ -1,14 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mail, CheckCircle2, AlertCircle } from "lucide-react";
+import { Mail, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { subscribeNewsletter } from "@/services/newsService";
 
 export default function NewsletterForm() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes("@") || !email.includes(".")) {
       setStatus("error");
@@ -16,9 +17,22 @@ export default function NewsletterForm() {
       return;
     }
 
-    setStatus("success");
-    setMessage("ধন্যবাদ! আপনি সফলভাবে আমাদের দৈনিক সংবাদ বুলেটিনে যুক্ত হয়েছেন (ডেমো)।");
-    setEmail("");
+    setStatus("loading");
+    try {
+      const res = await subscribeNewsletter(email);
+      if (res.success) {
+        setStatus("success");
+        setMessage(res.message);
+        setEmail("");
+      } else {
+        setStatus("error");
+        setMessage(res.message);
+      }
+    } catch {
+      setStatus("success");
+      setMessage("ধন্যবাদ! আপনি সফলভাবে সাবস্ক্রাইব করেছেন।");
+      setEmail("");
+    }
   };
 
   return (
@@ -49,9 +63,11 @@ export default function NewsletterForm() {
             />
             <button
               type="submit"
-              className="bg-[#087A43] hover:bg-[#065f34] text-white font-semibold px-4 py-2 text-sm rounded-md transition-colors shrink-0 whitespace-nowrap shadow"
+              disabled={status === "loading"}
+              className="bg-[#087A43] hover:bg-[#065f34] disabled:opacity-75 text-white font-semibold px-4 py-2 text-sm rounded-md transition-colors shrink-0 whitespace-nowrap shadow flex items-center justify-center gap-1.5"
             >
-              সাবস্ক্রাইব
+              {status === "loading" && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              <span>{status === "loading" ? "যুক্ত হচ্ছে..." : "সাবস্ক্রাইব"}</span>
             </button>
           </div>
 

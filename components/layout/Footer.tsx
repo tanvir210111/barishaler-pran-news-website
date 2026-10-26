@@ -3,11 +3,10 @@ import Link from "next/link";
 import { CATEGORIES } from "@/data/mockNews";
 import { Mail, Phone, MapPin } from "lucide-react";
 import SocialMediaIcons from "@/components/common/SocialMediaIcons";
+import { getSiteSettings } from "@/services/newsService";
 
-
-
-
-export default function Footer() {
+export default async function Footer() {
+  const settings = await getSiteSettings();
   const currentYear = 2026;
 
   const quickLinks = [
@@ -57,15 +56,15 @@ export default function Footer() {
             <div className="pt-2 text-xs text-gray-400 space-y-1.5">
               <p className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-[#0756A4]" />
-                প্লট-১২, প্রগতি সরণি, বারিধারা, ঢাকা-১২১২
+                {settings.officeAddress || "সিবি ভবন, সদর রোড, বরিশাল-৮২০০"}
               </p>
               <p className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[#087A43]" />
-                +৮৮০ ২ ৯৮৭৬৫৪৩, +৮৮০ ১৭০০০০০০০০
+                {settings.phone || "+৮৮০১৭১২-৩৪৫৬৭৮"}
               </p>
               <p className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[#D62828]" />
-                contact@barishalerpran.com
+                {settings.email || "contact@barishalerpran.com"}
               </p>
             </div>
           </div>

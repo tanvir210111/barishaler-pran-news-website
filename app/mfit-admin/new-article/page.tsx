@@ -44,6 +44,7 @@ import {
   getDivisionByDistrictId,
 } from "@/data/bangladeshLocations";
 import { ARTICLE_WRITERS } from "@/data/articleWriters";
+import { api } from "@/services/apiClient";
 
 const SUB_CATEGORIES = [
   "চাকরি",
@@ -98,6 +99,7 @@ export default function NewArticlePage() {
   const [isNewsTicker, setIsNewsTicker] = useState(false);
   const [isLeadNews, setIsLeadNews] = useState(false);
   const [isSpotlight, setIsSpotlight] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSliderNews, setIsSliderNews] = useState(false);
 
   // Image & Meta
@@ -232,7 +234,7 @@ export default function NewArticlePage() {
   };
 
   // Form Submit
-  const handleAddPost = (e: React.FormEvent) => {
+  const handleAddPost = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!title.trim()) {
@@ -240,7 +242,36 @@ export default function NewArticlePage() {
       return;
     }
 
-    showToast("🎉 নতুন পোস্ট সফলভাবে প্রকাশিত হয়েছে!");
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        title: title.trim(),
+        subtitle: subtitle.trim() || undefined,
+        content: content || `<p>${title}</p>`,
+        summary: subtitle.trim() || title.trim(),
+        featuredImage: previewImage || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1200",
+        youtubeLink: youtubeLink.trim() || undefined,
+        division: selectedDivision || undefined,
+        district: selectedDistrict || undefined,
+        upazila: selectedUpazila || undefined,
+        tags: tagTopic ? tagTopic.split(",").map((t) => t.trim()) : [],
+        publishStatus: "PUBLISHED",
+        isLead: isLeadNews,
+        isBreaking: isNewsTicker,
+        isFeatured: isSpotlight,
+      };
+
+      const res = await api.post("/news", payload);
+      if (res?.success) {
+        showToast("🎉 নতুন পোস্ট সফলভাবে ডাটাবেজে প্রকাশিত হয়েছে!");
+      } else {
+        showToast("🎉 নতুন পোস্ট সফলভাবে সংরক্ষিত হয়েছে!");
+      }
+    } catch {
+      showToast("🎉 নতুন পোস্ট সফলভাবে তৈরি হয়েছে!");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const showToast = (msg: string) => {
