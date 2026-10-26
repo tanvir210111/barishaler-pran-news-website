@@ -3,8 +3,9 @@ export interface Category {
   name: string;
   slug: string;
   description?: string;
-  order: number;
-  isMain: boolean; // true if in top 9 navbar items
+  order?: number;
+  isMain?: boolean; // true if in top 9 navbar items
+  articleCount?: number;
 }
 
 export interface Author {

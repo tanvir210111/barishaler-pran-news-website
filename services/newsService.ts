@@ -701,3 +701,37 @@ export function reportComment(articleId: string, commentId: string): boolean {
   }
   return false;
 }
+
+// ----------------- Advertisements -----------------
+
+export async function getActiveAds(placement?: string): Promise<any[]> {
+  try {
+    const url = placement ? `/ads?placement=${placement}` : "/ads";
+    const res = await api.get<any[]>(url);
+    if (res?.success && Array.isArray(res.data)) {
+      return res.data;
+    }
+  } catch (err) {
+    console.warn("Could not fetch active ads");
+  }
+  return [];
+}
+
+export async function trackAdImpression(adId: string): Promise<void> {
+  if (!adId) return;
+  try {
+    await api.post(`/ads/${adId}/impression`);
+  } catch {}
+}
+
+export async function trackAdClick(adId: string): Promise<string | null> {
+  if (!adId) return null;
+  try {
+    const res = await api.post<any>(`/ads/${adId}/click`);
+    if (res?.success && res.data?.targetUrl) {
+      return res.data.targetUrl;
+    }
+  } catch {}
+  return null;
+}
+

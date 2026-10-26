@@ -1,6 +1,10 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
+import { trackAdImpression, trackAdClick } from "@/services/newsService";
 
 interface AdProps {
+  adId?: string;
   position?: string;
   size?: "leaderboard" | "medium-rectangle" | "banner" | "sidebar" | "square" | "video";
   className?: string;
@@ -12,6 +16,7 @@ interface AdProps {
 }
 
 export default function AdvertisementPlaceholder({
+  adId,
   size = "leaderboard",
   className = "",
   imageUrl,
@@ -20,6 +25,18 @@ export default function AdvertisementPlaceholder({
   href,
   altText = "বিজ্ঞাপন",
 }: AdProps) {
+  useEffect(() => {
+    if (adId) {
+      trackAdImpression(adId);
+    }
+  }, [adId]);
+
+  const handleClick = () => {
+    if (adId) {
+      trackAdClick(adId);
+    }
+  };
+
   // If a video URL is provided, display video ad
   if (videoUrl) {
     const videoAspect = aspectRatio || "aspect-[4/3] min-h-[260px] sm:min-h-[290px] lg:min-h-[310px]";
@@ -46,6 +63,7 @@ export default function AdvertisementPlaceholder({
         {href ? (
           <a
             href={href}
+            onClick={handleClick}
             target="_blank"
             rel="noopener noreferrer sponsored"
             className="block w-full"
@@ -89,6 +107,7 @@ export default function AdvertisementPlaceholder({
         {href ? (
           <a
             href={href}
+            onClick={handleClick}
             target="_blank"
             rel="noopener noreferrer sponsored"
             className="block w-full"

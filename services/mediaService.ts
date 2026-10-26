@@ -6,7 +6,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
   {
     id: "1",
     title: "Dashboard Screenshot",
-    fileName: "gofullpage-banglaralotvbd-mfit-admin-index-php-2026-10-19-13_26_52.png",
+    fileName: "gofullpage-barisalerpran-mfit-admin-index-php-2026-10-19-13_26_52.png",
     uploadedOn: "October 19, 2026",
     uploadedBy: "Admin",
     fileType: "Image file",
@@ -204,7 +204,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     fileType: "Document file",
     fileSize: "94.20 KB",
     dimensions: "640 by 480pixels",
-    url: "https://banglaralotvbd.com/upload/2026/10/tehc-(1)-(1).png",
+    url: "https://barisalerpran.com/upload/2026/10/tehc-(1)-(1).png",
     isPlaceholder: true,
   },
   {
@@ -216,7 +216,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     fileType: "File",
     fileSize: "128.50 KB",
     dimensions: "800 by 600pixels",
-    url: "https://banglaralotvbd.com/upload/2026/10/00470c71fa9e2220bf64.png",
+    url: "https://barisalerpran.com/upload/2026/10/00470c71fa9e2220bf64.png",
     isPlaceholder: true,
   },
   {
@@ -264,7 +264,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     fileType: "File",
     fileSize: "89.30 KB",
     dimensions: "640 by 480pixels",
-    url: "https://banglaralotvbd.com/upload/2026/10/0ddf8720bab3551831e.png",
+    url: "https://barisalerpran.com/upload/2026/10/0ddf8720bab3551831e.png",
     isPlaceholder: true,
   },
   {
@@ -276,7 +276,7 @@ export const INITIAL_MEDIA_ITEMS: MediaItem[] = [
     fileType: "Image file",
     fileSize: "145.20 KB",
     dimensions: "800 by 600pixels",
-    url: "https://banglaralotvbd.com/upload/2026/10/260331_082308_0000.jpg",
+    url: "https://barisalerpran.com/upload/2026/10/260331_082308_0000.jpg",
     isPlaceholder: true,
   },
   {

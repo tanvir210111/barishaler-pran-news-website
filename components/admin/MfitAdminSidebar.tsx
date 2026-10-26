@@ -158,13 +158,10 @@ export default function MfitAdminSidebar({
           {expandedMenus.article &&
             renderSubMenu([
               { label: "New Article", href: "/mfit-admin/new-article" },
-              { label: "Article", href: "#article" },
-              { label: "Published Article", href: "#published-article" },
-              { label: "Draft Article", href: "#draft-article" },
-              { label: "Users Article", href: "#users-article" },
-              { label: "Pending Article", href: "#pending-article" },
-              { label: "Rejected Article", href: "#rejected-article" },
-              { label: "Category", href: "#category" },
+              { label: "Article", href: "/mfit-admin/articles" },
+              { label: "Published Article", href: "/mfit-admin/articles?status=PUBLISHED" },
+              { label: "Draft Article", href: "/mfit-admin/articles?status=DRAFT" },
+              { label: "Category", href: "/mfit-admin/categories" },
             ])}
         </div>
 
@@ -439,8 +436,8 @@ export default function MfitAdminSidebar({
           </button>
           {expandedMenus.headerFooter &&
             renderSubMenu([
-              { label: "Header Settings", href: "#header-settings" },
-              { label: "Footer Settings", href: "#footer-settings" },
+              { label: "Header Settings", href: "/mfit-admin/settings" },
+              { label: "Footer Settings", href: "/mfit-admin/settings" },
             ])}
         </div>
 
@@ -644,8 +641,8 @@ export default function MfitAdminSidebar({
           </button>
           {expandedMenus.settings &&
             renderSubMenu([
-              { label: "General Settings", href: "#general-settings" },
-              { label: "SEO & Metadata", href: "#seo-settings" },
+              { label: "General Settings", href: "/mfit-admin/settings" },
+              { label: "SEO & Metadata", href: "/mfit-admin/settings" },
             ])}
         </div>
 
